@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import axios from 'axios'
+import { useEffect } from 'react';
+import axios from 'axios';
 import { Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 
@@ -18,7 +18,7 @@ function App() {
     <Routes>
       <Route path='/' element={<HomePage />} />
     </Routes>
-  )
+  );
 }
 
-export default App
+export default App;
