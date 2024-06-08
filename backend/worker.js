@@ -56,6 +56,12 @@ wss.on('connection', (ws) => {
   // WebSocket message handling
 });
 
+app.use(express.static(path.join(__dirname, '..', 'frontend', 'dist')));
+
+// Handle all other routes by serving the index.html file
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'dist', 'index.html'));
+});
 // HTTP Server
 const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
