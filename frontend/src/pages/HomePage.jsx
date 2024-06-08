@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import MaxWidthWrapper from '../components/MaxWidthWrapper'
 import { FaChevronDown } from "react-icons/fa";
 import { HiOutlineArrowTopRightOnSquare } from "react-icons/hi2";
+import { Link } from 'react-router-dom';
 
 const HomePage = () => {
 
@@ -80,10 +81,13 @@ const HomePage = () => {
               </h6>
             </div>
           </div>
-          <button className='bg-[#EBEBEB] text-[#333333] rounded-full px-4 flex justify-center items-center gap-2'>
+          <Link
+            to={"/field-guide"}
+            className='bg-[#EBEBEB] text-[#333333] rounded-full px-4 flex justify-center items-center gap-2'
+          >
             <HiOutlineArrowTopRightOnSquare />
             Check Field Guide
-          </button>
+          </Link>
         </div>
       </main>
     </MaxWidthWrapper>
