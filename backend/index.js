@@ -16,4 +16,5 @@ if (cluster.isMaster) {
     });
   } else {
     require('./worker');
+
   }

@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const compression=require('compression');
 const cors=require('cors');
-
+const path= require('path')
 const PORT = 5000;
 app.use(bodyParser.json());
 app.use(express.json());
@@ -27,6 +27,8 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow the specified HTTP methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Allow the specified headers
 }));
+
+
 // Create MySQL Connection Pool using TCP
 const createPool = async () => {
   return createTcpPool({
@@ -56,7 +58,6 @@ wss.on('connection', (ws) => {
 });
 
 // app.use(express.static(path.join(__dirname, '..', 'frontend', 'dist')));
-
 // // Handle all other routes by serving the index.html file
 // app.get('*', (req, res) => {
 //   res.sendFile(path.join(__dirname, '..', 'frontend', 'dist', 'index.html'));
