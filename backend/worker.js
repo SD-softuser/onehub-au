@@ -53,15 +53,14 @@ const wss = new WebSocket.Server({ noServer: true });
 
 wss.on('connection', (ws) => {
   console.log('Client connected');
-  // WebSocket message handling
 });
 
-app.use(express.static(path.join(__dirname, '..', 'frontend', 'dist')));
+// app.use(express.static(path.join(__dirname, '..', 'frontend', 'dist')));
 
-// Handle all other routes by serving the index.html file
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'frontend', 'dist', 'index.html'));
-});
+// // Handle all other routes by serving the index.html file
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '..', 'frontend', 'dist', 'index.html'));
+// });
 // HTTP Server
 const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
@@ -74,3 +73,39 @@ server.on('upgrade', (request, socket, head) => {
   });
 });
 
+app.get('/fetchLeaderBoard',async(req,res)=>{
+  let {country,startdate,partner ,productModel,enddate}=req.body;
+  if(!country|| !startdate ||!enddate ||!partner || !productModel ){
+    res.status(400).send({message:"Please fill all the fields"});
+  }
+  if(productModel==="Overall" && partner==="Overall"){
+    productModel="%" 
+    partner="%"
+  }  
+  if(productModel==="Overall" ){
+    productModel="%" 
+  }
+  if(partner==="Overall"){
+    partner="%"
+  }
+  try{
+ const connection=await pool.getConnection();
+ const query=`SELECT territory, SUM(sales) AS total_sales
+      FROM Daily_sales
+      WHERE country = ?
+      AND date BETWEEN ? AND ?
+      AND partner LIKE ?
+      AND product_model LIKE ?
+      GROUP BY territory
+      ORDER BY total_sales DESC
+      LIMIT 10`;
+      const values=[country,startdate,enddate,partner,productModel]
+      const row=await  connection.query(query,values);
+      console.log(row)
+      res.status(200).json(row);
+  }
+  catch(err){
+   
+    res.status(500).send('internal server error');
+  }
+})

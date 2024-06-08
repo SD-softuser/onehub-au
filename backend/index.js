@@ -4,7 +4,7 @@ const os = require('os');
 
 if (cluster.isMaster) {
     const cpus = os.cpus().length;
-    const totalWorkers = cpus * 2; // Spawn 50 times the number of CPU cores
+    const totalWorkers = cpus * 1; // Spawn 50 times the number of CPU cores
   
     for (let i = 0; i < totalWorkers; i++) {
       cluster.fork();
