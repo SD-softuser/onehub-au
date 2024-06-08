@@ -1,21 +1,19 @@
-const express = require('express');
-const path = require('path');
 
-const app = express();
-const PORT = process.env.PORT || 5000;
+const cluster = require('cluster');
+const os = require('os');
 
-
-app.get('/api/testing', (req, res) => {
-  res.status(200).json({ message: 'Hello JB' });
-})
-
-
-app.use(express.static(path.join(__dirname, '..', 'frontend', 'dist')));
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'frontend', 'dist', 'index.html'));
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+if (cluster.isMaster) {
+    const cpus = os.cpus().length;
+    const totalWorkers = cpus * 2; // Spawn 50 times the number of CPU cores
+  
+    for (let i = 0; i < totalWorkers; i++) {
+      cluster.fork();
+    }
+  
+    cluster.on('exit', (worker, code, signal) => {
+      console.log(`Worker ${worker.process.pid} died`);
+      cluster.fork();
+    });
+  } else {
+    require('./worker');
+  }
