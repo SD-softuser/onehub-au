@@ -110,3 +110,35 @@ app.get('/fetchLeaderBoard',async(req,res)=>{
     res.status(500).send('internal server error');
   }
 })
+
+app.get('/fetchProductSales', async (req, res) => {
+  const { territory_id, date, partner } = req.body;
+  if (!territory_id || !date || !partner) {
+    return res.status(400).send({ message: "Please provide territory, date, and partner" });
+  }
+
+  try {
+    const connection = await pool.getConnection();
+    const query = `
+      SELECT
+        store_name,
+        city,
+        MAX(CASE WHEN product_model = 'Pixel 8a' THEN sales ELSE 0 END) AS 'Pixel 8a',
+        MAX(CASE WHEN product_model = 'Pixel 8' THEN sales ELSE 0 END) AS 'Pixel 8',
+        MAX(CASE WHEN product_model = 'Pixel 8 Pro' THEN sales ELSE 0 END) AS 'Pixel 8 Pro',
+        MAX(CASE WHEN product_model = 'Pixel Watch' THEN sales ELSE 0 END) AS 'Pixel Watch'
+      FROM onehub_db_testing.Daily_sales
+      WHERE territory = ? AND date = ? AND partner = ?
+      GROUP BY store_name, city
+      ORDER BY store_name;
+    `;
+    const values = [territory_id, date, partner];
+    const rows = await connection.query(query, values);
+    connection.release();  // Release the connection back to the pool
+    console.log(rows);
+    res.status(200).json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Internal server error');
+  }
+});
