@@ -1,0 +1,111 @@
+const express = require('express');
+const mysql = require('promise-mysql');
+const WebSocket = require('ws');
+const bodyParser = require('body-parser');
+const app = express();
+const compression=require('compression');
+const cors=require('cors');
+
+const PORT = 5000;
+app.use(bodyParser.json());
+app.use(express.json());
+// Create TCP Connection Pool
+const createTcpPool = async (config) => {
+  const dbConfig = {
+    host: '34.66.234.203',
+    port: '3306',
+    user: 'insert_ac',
+    password: 'google@123',
+    database: 'onehub_db_testing',
+    ...config,
+  };
+  return mysql.createPool(dbConfig);
+};
+
+app.use(cors({
+  origin: '*', // Allow requests from all origins, replace '*' with your frontend domain if needed
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow the specified HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allow the specified headers
+}));
+// Create MySQL Connection Pool using TCP
+const createPool = async () => {
+  return createTcpPool({
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+  });
+};
+
+
+let pool;
+
+(async () => {
+  try {
+    pool = await createPool();
+    console.log('MySQL connection pool initialized.');
+  } catch (error) {
+    console.error('Error initializing MySQL connection pool:', error);
+  }
+})();
+
+// WebSocket Server
+const wss = new WebSocket.Server({ noServer: true });
+
+wss.on('connection', (ws) => {
+  console.log('Client connected');
+});
+
+// app.use(express.static(path.join(__dirname, '..', 'frontend', 'dist')));
+
+// // Handle all other routes by serving the index.html file
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '..', 'frontend', 'dist', 'index.html'));
+// });
+// HTTP Server
+const server = app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+// Upgrade HTTP Server for WebSocket
+server.on('upgrade', (request, socket, head) => {
+  wss.handleUpgrade(request, socket, head, (ws) => {
+    wss.emit('connection', ws, request);
+  });
+});
+
+app.get('/fetchLeaderBoard',async(req,res)=>{
+  let {country,startdate,partner ,productModel,enddate}=req.body;
+  if(!country|| !startdate ||!enddate ||!partner || !productModel ){
+    res.status(400).send({message:"Please fill all the fields"});
+  }
+  if(productModel==="Overall" && partner==="Overall"){
+    productModel="%" 
+    partner="%"
+  }  
+  if(productModel==="Overall" ){
+    productModel="%" 
+  }
+  if(partner==="Overall"){
+    partner="%"
+  }
+  try{
+ const connection=await pool.getConnection();
+ const query=`SELECT territory, SUM(sales) AS total_sales
+      FROM Daily_sales
+      WHERE country = ?
+      AND date BETWEEN ? AND ?
+      AND partner LIKE ?
+      AND product_model LIKE ?
+      GROUP BY territory
+      ORDER BY total_sales DESC
+      LIMIT 10`;
+      const values=[country,startdate,enddate,partner,productModel]
+      const row=await  connection.query(query,values);
+      console.log(row)
+      res.status(200).json(row);
+  }
+  catch(err){
+   
+    res.status(500).send('internal server error');
+  }
+})
