@@ -136,9 +136,31 @@ app.get('/fetchProductSales', async (req, res) => {
     const rows = await connection.query(query, values);
     connection.release();  // Release the connection back to the pool
     console.log(rows);
-    res.status(200).json(rows);
+    res.status(200).json({data:[rows]});
   } catch (err) {
     console.error(err);
     res.status(500).send('Internal server error');
   }
 });
+
+app.put('/updateProductSales',async(req,res)=>{
+  const {sales,store_name,productModel,date}=req.body;
+  if (!sales || !store_name || !productModel || !date) {
+    return res.status(400).send({ message: "Please provide sales, store_name, product,date"});
+  }
+  try {
+    const connection=await pool.getConnection();
+    const query=`update Daily_sales set sales=? where store_name=? AND product_model=? and date=?`;
+    const values=[sales,store_name,productModel,date];
+    const result =await connection.query(query,values);
+    connection.release();
+    console.log(result)
+    res.status(200).json({message:"Updated successfully",
+      updatedRow:result
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal server error');
+  }
+})
