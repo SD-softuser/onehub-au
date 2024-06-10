@@ -20,18 +20,16 @@ const Structure = () => {
       <div className='bg-[#F6F7FA] w-full h-[2px]' />
 
       <div className='px-6'>
-        <ul>
-          <FormGroup>
-            <FormControlLabel control={<Checkbox />} label="Check-in to GFA and LILO" />
-            <FormControlLabel control={<Checkbox />} label="Connect with Management" />
-            <FormControlLabel control={<Checkbox />} label="Merchandising:" />
-            <FormControlLabel control={<Checkbox />} label="Follow the weekly priorities (listed on the following slide) and training materials" />
-            <FormControlLabel control={<Checkbox />} label="Check-in to GFA and LILO" />
-            <FormControlLabel control={<Checkbox />} label="Connect with Management" />
-            <FormControlLabel control={<Checkbox />} label="Merchandising:" />
-            <FormControlLabel control={<Checkbox />} label="Follow the weekly priorities (listed on the following slide) and training materials" />
-          </FormGroup>
-        </ul>
+        <FormGroup>
+          <FormControlLabel control={<Checkbox />} label="Check-in to GFA and LILO" />
+          <FormControlLabel control={<Checkbox />} label="Connect with Management" />
+          <FormControlLabel control={<Checkbox />} label="Merchandising:" />
+          <FormControlLabel control={<Checkbox />} label="Follow the weekly priorities (listed on the following slide) and training materials" />
+          <FormControlLabel control={<Checkbox />} label="Check-in to GFA and LILO" />
+          <FormControlLabel control={<Checkbox />} label="Connect with Management" />
+          <FormControlLabel control={<Checkbox />} label="Merchandising:" />
+          <FormControlLabel control={<Checkbox />} label="Follow the weekly priorities (listed on the following slide) and training materials" />
+        </FormGroup>
       </div>
 
       <div className='w-full px-20 py-6'>
