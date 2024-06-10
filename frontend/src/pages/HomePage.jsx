@@ -1,15 +1,26 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import MaxWidthWrapper from '../components/MaxWidthWrapper'
 import { FaChevronDown } from "react-icons/fa";
 import { HiOutlineArrowTopRightOnSquare } from "react-icons/hi2";
 import { Link } from 'react-router-dom';
 import useQuery from '../utils/useQuery';
+import LeaderBoardForm from '../components/LeaderBoardForm';
+import axios from 'axios'
 
 const HomePage = () => {
 
   const [opened, setOpened] = useState(false)
 
   const query = useQuery()
+
+  useEffect(() => {
+    const fetch = async () => {
+      const response = await axios.get('/api/testing')
+      const data = response.data
+      console.log(data)
+    }
+    fetch()
+  })
 
   return (
     <MaxWidthWrapper className="flex flex-col gap-6">
@@ -92,7 +103,17 @@ const HomePage = () => {
             Check Field Guide
           </Link>
         </div>
+
+        <Link
+          to={"/leaderboard"}
+          className='bg-[#EBEBEB] text-[#333333] rounded-full mt-4 px-4 flex justify-center items-center gap-2'
+        >
+          <HiOutlineArrowTopRightOnSquare />
+          Assisted LeaderBoard
+        </Link>
       </main>
+
+      <LeaderBoardForm />
     </MaxWidthWrapper>
   )
 }

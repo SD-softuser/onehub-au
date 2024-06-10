@@ -74,7 +74,11 @@ server.on('upgrade', (request, socket, head) => {
   });
 });
 
-app.get('/fetchLeaderBoard', async (req, res) => {
+app.get('/api/testing', async (req, res) => {
+  res.status(200).send({ message: 'Hello JB' })
+})
+
+app.get('/api/fetchLeaderBoard', async (req, res) => {
   let { country, startdate, partner, productModel, enddate } = req.body;
   if (!country || !startdate || !enddate || !partner || !productModel) {
     res.status(400).send({ message: "Please fill all the fields" });
@@ -111,7 +115,7 @@ app.get('/fetchLeaderBoard', async (req, res) => {
   }
 })
 
-app.get('/fetchProductSales', async (req, res) => {
+app.get('/api/fetchProductSales', async (req, res) => {
   const { territory_id, date, partner } = req.body;
   if (!territory_id || !date || !partner) {
     return res.status(400).send({ message: "Please provide territory, date, and partner" });
@@ -143,7 +147,7 @@ app.get('/fetchProductSales', async (req, res) => {
   }
 });
 
-app.put('/updateProductSales', async (req, res) => {
+app.put('/api/updateProductSales', async (req, res) => {
   const { sales, store_name, productModel, date } = req.body;
   if (!sales || !store_name || !productModel || !date) {
     return res.status(400).send({ message: "Please provide sales, store_name, product,date" });
