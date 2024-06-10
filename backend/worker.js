@@ -116,8 +116,9 @@ app.get('/api/fetchLeaderBoard', async (req, res) => {
 })
 
 app.get('/api/fetchProductSales', async (req, res) => {
-  console.log(req.body)
-  const { territory_id, date, partner } = req.body;
+  // console.log("req.query is : ", req.query)
+  const { territory_id, date, partner } = req.query;
+  // console.log("req.query descturtue", territory_id, date, partner);
   if (!territory_id || !date || !partner) {
     return res.status(400).send({ message: "Please provide territory, date, and partner",data:`${territory_id}, ${date}, ${partner}` });
   }
@@ -140,8 +141,8 @@ app.get('/api/fetchProductSales', async (req, res) => {
     const values = [territory_id, date, partner];
     const rows = await connection.query(query, values);
     connection.release();  // Release the connection back to the pool
-    console.log(rows);
-    res.status(200).json({ data: [rows] });
+    // console.log(rows);
+    res.status(200).json(rows);
   } catch (err) {
     console.error(err);
     res.status(500).send('Internal server error');
