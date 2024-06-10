@@ -3,10 +3,13 @@ import MaxWidthWrapper from '../components/MaxWidthWrapper'
 import { FaChevronDown } from "react-icons/fa";
 import { HiOutlineArrowTopRightOnSquare } from "react-icons/hi2";
 import { Link } from 'react-router-dom';
+import useQuery from '../utils/useQuery';
 
 const HomePage = () => {
 
   const [opened, setOpened] = useState(false)
+
+  const query = useQuery()
 
   return (
     <MaxWidthWrapper className="flex flex-col gap-6">
