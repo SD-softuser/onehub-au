@@ -9,7 +9,7 @@ const HomePage = () => {
   const [opened, setOpened] = useState(false)
 
   return (
-    <MaxWidthWrapper>
+    <MaxWidthWrapper className="flex flex-col gap-6">
       <header className='w-full flex justify-center items-center py-2.5 gap-2'>
         <img
           src="/Google Logo.png"

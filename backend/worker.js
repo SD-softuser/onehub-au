@@ -3,9 +3,9 @@ const mysql = require('promise-mysql');
 const WebSocket = require('ws');
 const bodyParser = require('body-parser');
 const app = express();
-const compression=require('compression');
-const cors=require('cors');
-const path= require('path')
+const compression = require('compression');
+const cors = require('cors');
+const path = require('path')
 const PORT = 5000;
 app.use(bodyParser.json());
 app.use(express.json());
@@ -74,24 +74,24 @@ server.on('upgrade', (request, socket, head) => {
   });
 });
 
-app.get('/fetchLeaderBoard',async(req,res)=>{
-  let {country,startdate,partner ,productModel,enddate}=req.body;
-  if(!country|| !startdate ||!enddate ||!partner || !productModel ){
-    res.status(400).send({message:"Please fill all the fields"});
+app.get('/fetchLeaderBoard', async (req, res) => {
+  let { country, startdate, partner, productModel, enddate } = req.body;
+  if (!country || !startdate || !enddate || !partner || !productModel) {
+    res.status(400).send({ message: "Please fill all the fields" });
   }
-  if(productModel==="Overall" && partner==="Overall"){
-    productModel="%" 
-    partner="%"
-  }  
-  if(productModel==="Overall" ){
-    productModel="%" 
+  if (productModel === "Overall" && partner === "Overall") {
+    productModel = "%"
+    partner = "%"
   }
-  if(partner==="Overall"){
-    partner="%"
+  if (productModel === "Overall") {
+    productModel = "%"
   }
-  try{
- const connection=await pool.getConnection();
- const query=`SELECT territory, SUM(sales) AS total_sales
+  if (partner === "Overall") {
+    partner = "%"
+  }
+  try {
+    const connection = await pool.getConnection();
+    const query = `SELECT territory, SUM(sales) AS total_sales
       FROM Daily_sales
       WHERE country = ?
       AND date BETWEEN ? AND ?
@@ -100,13 +100,13 @@ app.get('/fetchLeaderBoard',async(req,res)=>{
       GROUP BY territory
       ORDER BY total_sales DESC
       LIMIT 10`;
-      const values=[country,startdate,enddate,partner,productModel]
-      const row=await  connection.query(query,values);
-      console.log(row)
-      res.status(200).json(row);
+    const values = [country, startdate, enddate, partner, productModel]
+    const row = await connection.query(query, values);
+    console.log(row)
+    res.status(200).json(row);
   }
-  catch(err){
-   
+  catch (err) {
+
     res.status(500).send('internal server error');
   }
 })
@@ -136,27 +136,28 @@ app.get('/fetchProductSales', async (req, res) => {
     const rows = await connection.query(query, values);
     connection.release();  // Release the connection back to the pool
     console.log(rows);
-    res.status(200).json({data:[rows]});
+    res.status(200).json({ data: [rows] });
   } catch (err) {
     console.error(err);
     res.status(500).send('Internal server error');
   }
 });
 
-app.put('/updateProductSales',async(req,res)=>{
-  const {sales,store_name,productModel,date}=req.body;
+app.put('/updateProductSales', async (req, res) => {
+  const { sales, store_name, productModel, date } = req.body;
   if (!sales || !store_name || !productModel || !date) {
-    return res.status(400).send({ message: "Please provide sales, store_name, product,date"});
+    return res.status(400).send({ message: "Please provide sales, store_name, product,date" });
   }
   try {
-    const connection=await pool.getConnection();
-    const query=`update Daily_sales set sales=? where store_name=? AND product_model=? and date=?`;
-    const values=[sales,store_name,productModel,date];
-    const result =await connection.query(query,values);
+    const connection = await pool.getConnection();
+    const query = `update Daily_sales set sales=? where store_name=? AND product_model=? and date=?`;
+    const values = [sales, store_name, productModel, date];
+    const result = await connection.query(query, values);
     connection.release();
     console.log(result)
-    res.status(200).json({message:"Updated successfully",
-      updatedRow:result
+    res.status(200).json({
+      message: "Updated successfully",
+      updatedRow: result
     });
 
   } catch (error) {
