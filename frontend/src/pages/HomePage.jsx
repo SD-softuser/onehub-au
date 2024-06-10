@@ -13,14 +13,14 @@ const HomePage = () => {
 
   const query = useQuery()
 
-  useEffect(() => {
-    const fetch = async () => {
-      const response = await axios.get('/api/testing')
-      const data = response.data
-      console.log(data)
-    }
-    fetch()
-  })
+  // useEffect(() => {
+  //   const fetch = async () => {
+  //     const response = await axios.get('/api/testing')
+  //     const data = response.data
+  //     console.log(data)
+  //   }
+  //   fetch()
+  // })
 
   return (
     <MaxWidthWrapper className="flex flex-col gap-6">
