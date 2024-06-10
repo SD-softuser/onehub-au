@@ -116,9 +116,10 @@ app.get('/api/fetchLeaderBoard', async (req, res) => {
 })
 
 app.get('/api/fetchProductSales', async (req, res) => {
+  console.log(req.body)
   const { territory_id, date, partner } = req.body;
   if (!territory_id || !date || !partner) {
-    return res.status(400).send({ message: "Please provide territory, date, and partner" });
+    return res.status(400).send({ message: "Please provide territory, date, and partner",data:`${territory_id}, ${date}, ${partner}` });
   }
 
   try {
