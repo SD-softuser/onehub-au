@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import DatePicker from "react-multi-date-picker";
 import axios from "axios";
 import useQuery from "../utils/useQuery";
-import formatDate from "../utils/formatDate";
 import { FiEdit3 } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux"
 import { showLoader, hideLoader } from '../app/slices/loaderSlice';
