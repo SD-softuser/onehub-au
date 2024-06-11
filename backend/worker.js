@@ -115,7 +115,7 @@ app.get('/api/fetchLeaderBoard', async (req, res) => {
 
 app.get('/api/fetchProductSales', async (req, res) => {
   // console.log("req.query is : ", req.query)
-  const { territory_id, date, partner } = req.body;
+  const { territory_id, date, partner } = req.query;
   console.log('Request received with params:', { territory_id, date, partner });
   // console.log("req.query descturtue", territory_id, date, partner);
   if (!territory_id || !date || !partner) {

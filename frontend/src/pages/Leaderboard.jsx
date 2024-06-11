@@ -10,6 +10,7 @@ import axios from "axios";
 import TrophyDisplay from "../components/TrophyDisplay";
 import { useDispatch, useSelector } from "react-redux";
 import { hideLoader, showLoader } from "../app/slices/loaderSlice";
+import SvgComponent from "../components/SvgComponent";
 
 
 const LeaderBoard = () => {
@@ -214,11 +215,12 @@ const LeaderBoard = () => {
                   <td className={`px-4 py-2 hover:bg-gray-200 text-gray-500`}>
                     {rowIndex + 1}
                   </td>
-                  {columns.map((colName) => (
+                  {columns.map((colName, colIndex) => (
                     <td
                       key={`${rowIndex}-${colName}`}
-                      className={`px-4 py-2 hover:bg-gray-200`}
+                      className={`px-4 py-2 hover:bg-gray-200 ${colIndex === 1 && "flex gap-2"}`}
                     >
+                      {colIndex === 1 && <SvgComponent />}
                       {row[colName]}
                     </td>
                   ))}

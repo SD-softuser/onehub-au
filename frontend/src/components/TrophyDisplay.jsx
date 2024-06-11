@@ -1,4 +1,7 @@
 import React from "react";
+import SvgComponent from "./SvgComponent";
+
+
 
 const TrophyDisplay = ({ data }) => {
   console.log(data);
@@ -27,6 +30,8 @@ const TrophyDisplay = ({ data }) => {
     fontSize: "1.2em",
     color: "black",
     fontWeight: "900",
+    justifyContent: "center",
+    alignItems: "center",
   };
 
   const detailsTextStyle = {
@@ -42,8 +47,11 @@ const TrophyDisplay = ({ data }) => {
         <div style={trophyContainerStyle}>
           <div>
             <h2 style={detailsTitleStyle}>{data[1].territory}</h2>
-            <div className="flex flex-row gap-3 px-2 border-2 border-gray-200 rounded-2xl mb-2">
-              <p style={detailsTextStyle}>{data[1].sales}</p>
+            <div className="flex flex-row justify-center items-center gap-3 px-2 border-2 border-gray-200 rounded-2xl mb-2">
+              <SvgComponent />
+              <p style={detailsTextStyle}>
+                {data[1].sales}
+              </p>
             </div>
           </div>
           <div className="relative flex items-center justify-center w-24 h-24">
@@ -58,7 +66,8 @@ const TrophyDisplay = ({ data }) => {
         <div style={trophyContainerStyle}>
           <div>
             <h2 style={detailsTitleStyle}>{data[0].territory}</h2>
-            <div className="flex flex-row gap-3 px-2 border-2 border-gray-200 rounded-2xl mb-2">
+            <div className="flex flex-row justify-center items-center gap-3 px-2 border-2 border-gray-200 rounded-2xl mb-2">
+              <SvgComponent />
               <p style={detailsTextStyle}>{data[0].sales}</p>
             </div>
           </div>
@@ -68,13 +77,14 @@ const TrophyDisplay = ({ data }) => {
               alt="Rank 1"
               style={trophyIconStyle(1)}
             />
-            <p className="absolute top-14 text-white text-5xl font-bold">1</p>
+            <p className="absolute top-14 text-white text-5xl font-bold -translate-x-1">1</p>
           </div>
         </div>
         <div style={trophyContainerStyle}>
           <div>
             <h2 style={detailsTitleStyle}>{data[2].territory}</h2>
-            <div className="flex flex-row gap-3 px-2 border-2 border-gray-200 rounded-2xl mb-2">
+            <div className="flex flex-row justify-center items-center gap-3 px-2 border-2 border-gray-200 rounded-2xl mb-2">
+              <SvgComponent />
               <p style={detailsTextStyle}>{data[2].sales}</p>
             </div>
           </div>
