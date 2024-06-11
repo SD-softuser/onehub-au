@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react'
-import MaxWidthWrapper from '../components/MaxWidthWrapper'
+import React, { useEffect, useState } from "react";
+import MaxWidthWrapper from "../components/MaxWidthWrapper";
 
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import DatePicker from 'react-multi-date-picker';
-import axios from 'axios';
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import DatePicker from "react-multi-date-picker";
+import axios from "axios";
+import TrophyDisplay from "../components/TrophyDisplay";
+
 
 const LeaderBoard = () => {
   const [filters, setFilters] = useState({
@@ -14,10 +16,26 @@ const LeaderBoard = () => {
     startdate: "2024-05-07",
     enddate: "2024-06-08",
     productModel: "Overall",
-    partner: "Overall"
-  })
+    partner: "Overall",
+  });
+  const [tableData, setTableData] = useState([]);
+  console.log(tableData)
+  const [columns, setColumns] = useState([]);
+  const getUniqueColumns = (data) => {
+    const columns = new Set();
+    for (const item of data) {
+      Object.keys(item).forEach((key) => columns.add(key));
+    }
+    return Array.from(columns);
+  };
 
-  console.log(filters);
+  const proccessedData = (data)=>{
+    return [...data].sort((a, b) => b.total_sales - a.total_sales).slice(0,3).map((item,index)=>({rank:index+1,territory:item.territory,sales:item.total_sales}))
+  }
+  const sortedData = (data) => {
+    setDataRanking(proccessedData(data))
+    return [...data].sort((a, b) => b.total_sales - a.total_sales);
+  };
 
   const handleDateRangeChange = (e) => {
     console.log("event is :  ", e);
@@ -35,51 +53,60 @@ const LeaderBoard = () => {
     setFilters({
       ...filters,
       startdate: startDateString,
-      enddate: endDateString
-    })
-  }
+      enddate: endDateString,
+    });
+  };
+  const [dataRanking,setDataRanking] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios.get(`/api/fetchLeaderBoard`, {
         params: filters,
-      })
+      });
       console.log("Leaderboard Data : ", response.data);
-    }
-    fetchData()
-  }, [filters])
+      setTableData(sortedData(response.data));
+      setColumns(getUniqueColumns(sortedData(response.data)));
+    };
+    fetchData();
+  }, [filters]);
 
   return (
     <MaxWidthWrapper>
-      <header className='w-full flex justify-between items-center px-4'>
-        <div className='flex gap-2 h-full'>
+      <header className="w-full flex justify-between items-center px-4">
+        <div className="flex gap-2 h-full">
           <button
-            className={`px-6 py-2.5 border-[1px] rounded-xl transition ${filters.country === "US" && "border-googleBlue-500"}`}
+            className={`px-6 py-2.5 border-[1px] rounded-xl transition ${
+              filters.country === "US" && "border-googleBlue-500"
+            }`}
             onClick={() => {
               setFilters({
                 ...filters,
-                country: encodeURIComponent("US")
-              })
+                country: encodeURIComponent("US"),
+              });
             }}
           >
             US
           </button>
           <button
-            className={`px-6 py-2.5 border-[1px] rounded-xl transition ${filters.country === "CA" && "border-googleBlue-500"}`}
+            className={`px-6 py-2.5 border-[1px] rounded-xl transition ${
+              filters.country === "CA" && "border-googleBlue-500"
+            }`}
             onClick={() => {
               setFilters({
                 ...filters,
-                country: encodeURIComponent("CA")
-              })
+                country: encodeURIComponent("CA"),
+              });
             }}
           >
             CA
           </button>
         </div>
 
-        <div className='flex'>
+        <div className="flex">
           <FormControl sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="demo-simple-select-helper-label">Partner</InputLabel>
+            <InputLabel id="demo-simple-select-helper-label">
+              Partner
+            </InputLabel>
             <Select
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
@@ -88,7 +115,7 @@ const LeaderBoard = () => {
               onChange={(e) => {
                 setFilters({
                   ...filters,
-                  partner: e.target.value
+                  partner: e.target.value,
                 });
               }}
             >
@@ -101,7 +128,9 @@ const LeaderBoard = () => {
           </FormControl>
 
           <FormControl sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="demo-simple-select-helper-label">Product Model</InputLabel>
+            <InputLabel id="demo-simple-select-helper-label">
+              Product Model
+            </InputLabel>
             <Select
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
@@ -110,7 +139,7 @@ const LeaderBoard = () => {
               onChange={(e) => {
                 setFilters({
                   ...filters,
-                  productModel: e.target.value
+                  productModel: e.target.value,
                 });
               }}
             >
@@ -126,7 +155,7 @@ const LeaderBoard = () => {
 
       <div>
         <div className="flex gap-2 my-4 items-center">
-          <h1 className="font-semibold">Date Selector:</h1>
+          <h1 className="font-semibold">Date Range Selector:</h1>
           <DatePicker
             value={[filters.startdate, filters.enddate]}
             onChange={handleDateRangeChange}
@@ -136,8 +165,47 @@ const LeaderBoard = () => {
           />
         </div>
       </div>
-    </MaxWidthWrapper>
-  )
-}
 
-export default LeaderBoard
+      {(tableData && dataRanking) && <TrophyDisplay data={dataRanking} />}
+
+      <table className="table-auto w-full my-3">
+        {/* Table Header */}
+        <thead>
+          <tr style={{ borderBottom: "1px solid #ddd" }}>
+            {" "}
+            <th className={`px-4 py-2 text-left text-gray-600`}>Rank</th>{" "}
+            {columns.map((colName) => (
+              <th key={colName} className={`px-4 py-2 text-left text-gray-600`}>
+                {/* Capitalize the first letter */}
+                {colName.charAt(0).toUpperCase() + colName.slice(1)}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        {/* Table Body */}
+        <tbody>
+          {tableData.map((row, rowIndex) => (
+            <tr
+              key={rowIndex}
+              className={`${rowIndex === 0 ? "font-bold" : ""}`}
+            >
+              <td className={`px-4 py-2 hover:bg-gray-200 text-gray-500`}>
+                {rowIndex + 1}
+              </td>
+              {columns.map((colName) => (
+                <td
+                  key={`${rowIndex}-${colName}`}
+                  className={`px-4 py-2 hover:bg-gray-200`}
+                >
+                  {row[colName]}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </MaxWidthWrapper>
+  );
+};
+
+export default LeaderBoard;

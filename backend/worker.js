@@ -64,11 +64,11 @@ wss.on('connection', (ws) => {
 // });
 // HTTP Server
 
-app.use(express.static(path.join(__dirname, '/../frontend/dist')));
+// app.use(express.static(path.join(__dirname, '/../frontend/dist')));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'frontend', 'dist', 'index.html'));
-});
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '..', 'frontend', 'dist', 'index.html'));
+// });
 
 const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
@@ -125,6 +125,7 @@ app.get('/api/fetchLeaderBoard', async (req, res) => {
 app.get('/api/fetchProductSales', async (req, res) => {
   // console.log("req.query is : ", req.query)
   const { territory_id, date, partner } = req.query;
+  console.log('Request received with params:', { territory_id, date, partner });
   // console.log("req.query descturtue", territory_id, date, partner);
   if (!territory_id || !date || !partner) {
     return res.status(400).send({ message: "Please provide territory, date, and partner",data:`${territory_id}, ${date}, ${partner}` });
