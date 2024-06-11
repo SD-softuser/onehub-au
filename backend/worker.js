@@ -106,7 +106,7 @@ app.get('/api/fetchLeaderBoard', async (req, res) => {
       LIMIT 10`;
     const values = [country, startdate, enddate, partner, productModel]
     const row = await connection.query(query, values);
-    console.log(row)
+    // console.log(row)
     res.status(200).json(row);
   }
   catch (err) {

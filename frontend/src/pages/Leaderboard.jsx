@@ -44,7 +44,7 @@ const LeaderBoard = () => {
       const response = await axios.get(`/api/fetchLeaderBoard`, {
         params: filters,
       })
-      console.log(response.data);
+      console.log("Leaderboard Data : ", response.data);
     }
     fetchData()
   }, [filters])
