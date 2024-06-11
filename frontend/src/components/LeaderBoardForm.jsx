@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import DatePicker from "react-multi-date-picker";
 import axios from "axios";
 import useQuery from "../utils/useQuery";
-import formatDate from "../utils/formatDate";
 import { FiEdit3 } from "react-icons/fi";
+import { useDispatch, useSelector } from "react-redux"
+import { showLoader, hideLoader } from '../app/slices/loaderSlice';
 
 const partners = ["AT&T", "Verizon", "T-Mobile", "Best Buy"];
 
@@ -11,8 +12,8 @@ const PartnerButton = ({ partnerName, selectedPartner, setPartner }) => {
   return (
     <button
       className={`px-4 py-2 border-[1px] rounded-xl ${selectedPartner === partnerName
-          ? "border-googleBlue-500 text-googleBlue-500"
-          : ""
+        ? "border-googleBlue-500 text-googleBlue-500"
+        : ""
         }`}
       onClick={() => setPartner(partnerName)}
     >
@@ -30,7 +31,9 @@ const LeaderBoardForm = () => {
   const [tableData, setTableData] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [columns, setColumns] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+
+  const dispatch = useDispatch()
+  const isLoading = useSelector((state) => state.loader.isLoading)
 
   const handleDateChange = (e) => {
     const year = e.year;
@@ -51,7 +54,7 @@ const LeaderBoardForm = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setIsLoading(true);
+        dispatch(showLoader())
         const encodedTerritory = encodeURIComponent(territory_id);
         const encodedDate = encodeURIComponent(date);
         const encodedPartner = encodeURIComponent(partner);
@@ -72,7 +75,7 @@ const LeaderBoardForm = () => {
       } catch (err) {
         console.error("Error fetching data:", err);
       } finally {
-        setIsLoading(false)
+        dispatch(hideLoader())
       }
     };
 
@@ -82,6 +85,14 @@ const LeaderBoardForm = () => {
   const handleEditClick = () => {
     setIsEdit(!isEdit);
   };
+
+  if (isLoading) {
+    return (
+      <div>
+        <h1>Loading...</h1>
+      </div>
+    )
+  }
 
   return (
     <div className="bg-white w-full px-4 py-4 rounded-xl shadow-md">

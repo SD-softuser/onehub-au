@@ -8,9 +8,15 @@ import Select from "@mui/material/Select";
 import DatePicker from "react-multi-date-picker";
 import axios from "axios";
 import TrophyDisplay from "../components/TrophyDisplay";
+import { useDispatch, useSelector } from "react-redux";
+import { hideLoader, showLoader } from "../app/slices/loaderSlice";
 
 
 const LeaderBoard = () => {
+  const dispatch = useDispatch()
+  const isLoading = useSelector((state) => state.loader.isLoading)
+  console.log("loading ? ", isLoading);
+
   const [filters, setFilters] = useState({
     country: "US",
     startdate: "2024-05-07",
@@ -18,9 +24,11 @@ const LeaderBoard = () => {
     productModel: "Overall",
     partner: "Overall",
   });
+
   const [tableData, setTableData] = useState([]);
   console.log(tableData)
   const [columns, setColumns] = useState([]);
+
   const getUniqueColumns = (data) => {
     const columns = new Set();
     for (const item of data) {
@@ -29,8 +37,8 @@ const LeaderBoard = () => {
     return Array.from(columns);
   };
 
-  const proccessedData = (data)=>{
-    return [...data].sort((a, b) => b.total_sales - a.total_sales).slice(0,3).map((item,index)=>({rank:index+1,territory:item.territory,sales:item.total_sales}))
+  const proccessedData = (data) => {
+    return [...data].sort((a, b) => b.total_sales - a.total_sales).slice(0, 3).map((item, index) => ({ rank: index + 1, territory: item.territory, sales: item.total_sales }))
   }
   const sortedData = (data) => {
     setDataRanking(proccessedData(data))
@@ -56,28 +64,35 @@ const LeaderBoard = () => {
       enddate: endDateString,
     });
   };
-  const [dataRanking,setDataRanking] = useState([]);
+  const [dataRanking, setDataRanking] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get(`/api/fetchLeaderBoard`, {
-        params: filters,
-      });
-      console.log("Leaderboard Data : ", response.data);
-      setTableData(sortedData(response.data));
-      setColumns(getUniqueColumns(sortedData(response.data)));
+      try {
+        dispatch(showLoader())
+        const response = await axios.get(`/api/fetchLeaderBoard`, {
+          params: filters,
+        });
+        console.log("Leaderboard Data : ", response.data);
+        setTableData(sortedData(response.data));
+        setColumns(getUniqueColumns(sortedData(response.data)));
+      } catch (error) {
+        console.log(error);
+      } finally {
+        console.log("Finally done");
+        dispatch(hideLoader())
+      }
     };
     fetchData();
-  }, [filters]);
+  }, [filters, dispatch]);
 
   return (
     <MaxWidthWrapper>
       <header className="w-full flex justify-between items-center px-4">
         <div className="flex gap-2 h-full">
           <button
-            className={`px-6 py-2.5 border-[1px] rounded-xl transition ${
-              filters.country === "US" && "border-googleBlue-500"
-            }`}
+            className={`px-6 py-2.5 border-[1px] rounded-xl transition ${filters.country === "US" && "border-googleBlue-500"
+              }`}
             onClick={() => {
               setFilters({
                 ...filters,
@@ -88,9 +103,8 @@ const LeaderBoard = () => {
             US
           </button>
           <button
-            className={`px-6 py-2.5 border-[1px] rounded-xl transition ${
-              filters.country === "CA" && "border-googleBlue-500"
-            }`}
+            className={`px-6 py-2.5 border-[1px] rounded-xl transition ${filters.country === "CA" && "border-googleBlue-500"
+              }`}
             onClick={() => {
               setFilters({
                 ...filters,
@@ -166,44 +180,52 @@ const LeaderBoard = () => {
         </div>
       </div>
 
-      {(tableData && dataRanking) && <TrophyDisplay data={dataRanking} />}
+      {isLoading ? (
+        <div>
+          <h1>Loading...</h1>
+        </div>
+      ) : (
+        <>
+          {(tableData && dataRanking) && <TrophyDisplay data={dataRanking} />}
 
-      <table className="table-auto w-full my-3">
-        {/* Table Header */}
-        <thead>
-          <tr style={{ borderBottom: "1px solid #ddd" }}>
-            {" "}
-            <th className={`px-4 py-2 text-left text-gray-600`}>Rank</th>{" "}
-            {columns.map((colName) => (
-              <th key={colName} className={`px-4 py-2 text-left text-gray-600`}>
-                {/* Capitalize the first letter */}
-                {colName.charAt(0).toUpperCase() + colName.slice(1)}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        {/* Table Body */}
-        <tbody>
-          {tableData.map((row, rowIndex) => (
-            <tr
-              key={rowIndex}
-              className={`${rowIndex === 0 ? "font-bold" : ""}`}
-            >
-              <td className={`px-4 py-2 hover:bg-gray-200 text-gray-500`}>
-                {rowIndex + 1}
-              </td>
-              {columns.map((colName) => (
-                <td
-                  key={`${rowIndex}-${colName}`}
-                  className={`px-4 py-2 hover:bg-gray-200`}
+          <table className="table-auto w-full my-3">
+            {/* Table Header */}
+            <thead>
+              <tr style={{ borderBottom: "1px solid #ddd" }}>
+                {" "}
+                <th className={`px-4 py-2 text-left text-gray-600`}>Rank</th>{" "}
+                {columns.map((colName) => (
+                  <th key={colName} className={`px-4 py-2 text-left text-gray-600`}>
+                    {/* Capitalize the first letter */}
+                    {colName.charAt(0).toUpperCase() + colName.slice(1)}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            {/* Table Body */}
+            <tbody>
+              {tableData.map((row, rowIndex) => (
+                <tr
+                  key={rowIndex}
+                  className={`${rowIndex === 0 ? "font-bold" : ""}`}
                 >
-                  {row[colName]}
-                </td>
+                  <td className={`px-4 py-2 hover:bg-gray-200 text-gray-500`}>
+                    {rowIndex + 1}
+                  </td>
+                  {columns.map((colName) => (
+                    <td
+                      key={`${rowIndex}-${colName}`}
+                      className={`px-4 py-2 hover:bg-gray-200`}
+                    >
+                      {row[colName]}
+                    </td>
+                  ))}
+                </tr>
               ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+            </tbody>
+          </table>
+        </>
+      )}
     </MaxWidthWrapper>
   );
 };
