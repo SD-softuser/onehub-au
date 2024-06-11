@@ -6,18 +6,23 @@ import { FiEdit3 } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux"
 import { showLoader, hideLoader } from '../app/slices/loaderSlice';
 
-const partners = ["AT&T", "Verizon", "T-Mobile", "Best Buy"];
+const partners = [
+  { name: "AT&T", logo: "assets/att.webp" },
+  { name: "Verizon", logo: "assets/verizon.webp" },
+  { name: "T-Mobile", logo: "assets/tmobile.webp" },
+  { name: "Best Buy", logo: "assets/bestbuy.webp" }
+];
 
-const PartnerButton = ({ partnerName, selectedPartner, setPartner }) => {
+const PartnerButton = ({ partnerName, selectedPartner, setPartner,icon }) => {
   return (
     <button
-      className={`px-4 py-2 border-[1px] rounded-xl ${selectedPartner === partnerName
+      className={`flex flex-row gap-3 justify-center items-center px-4 py-2 border-[1px] rounded-xl ${selectedPartner === partnerName
         ? "border-googleBlue-500 text-googleBlue-500"
         : ""
         }`}
       onClick={() => setPartner(partnerName)}
     >
-      <div></div>
+      <img src={icon} alt={`${partnerName}`} className="h-6 w-8"/>
       <h6>{partnerName}</h6>
     </button>
   );
@@ -100,10 +105,11 @@ const LeaderBoardForm = () => {
       <div className="flex gap-3">
         {partners.map((partnerName) => (
           <PartnerButton
-            key={partnerName}
-            partnerName={partnerName}
+            key={partnerName.name}
+            partnerName={partnerName.name}
             selectedPartner={partner}
             setPartner={setPartner}
+            icon={partnerName.logo}
           />
         ))}
       </div>
