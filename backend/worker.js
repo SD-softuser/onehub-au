@@ -79,7 +79,7 @@ app.get('/api/testing', async (req, res) => {
 })
 
 app.get('/api/fetchLeaderBoard', async (req, res) => {
-  let { country, startdate, partner, productModel, enddate } = req.body;
+  let { country, startdate, partner, productModel, enddate } = req.query;
   if (!country || !startdate || !enddate || !partner || !productModel) {
     res.status(400).send({ message: "Please fill all the fields" });
   }

@@ -10,11 +10,10 @@ const partners = ["AT&T", "Verizon", "T-Mobile", "Best Buy"];
 const PartnerButton = ({ partnerName, selectedPartner, setPartner }) => {
   return (
     <button
-      className={`px-4 py-2 border-[1px] rounded-xl ${
-        selectedPartner === partnerName
+      className={`px-4 py-2 border-[1px] rounded-xl ${selectedPartner === partnerName
           ? "border-googleBlue-500 text-googleBlue-500"
           : ""
-      }`}
+        }`}
       onClick={() => setPartner(partnerName)}
     >
       <div></div>
@@ -40,6 +39,7 @@ const LeaderBoardForm = () => {
     const dateString = `${year}-${month}-${day}`;
     setDate(dateString);
   };
+
   const getUniqueColumns = (data) => {
     const columns = new Set();
     for (const item of data) {
@@ -58,13 +58,20 @@ const LeaderBoardForm = () => {
         const response = await axios.get(
           `/api/fetchProductSales?territory_id=${encodedTerritory}&date=${encodedDate}&partner=${encodedPartner}`
         );
+        // const response = await axios.get(`/api/fetchProductSales?territory_id=${encodedTerritory}&date=${encodedDate}&partner=${encodedPartner}`, {
+        //   params: {
+        //     // territory_id: encodedTerritory,
+        //     date: encodedDate,
+        //     partner: encodedPartner
+        //   }
+        // });
 
         console.log(response.data);
         setTableData(response.data);
         setColumns(getUniqueColumns(response.data));
       } catch (err) {
         console.error("Error fetching data:", err);
-      }finally{
+      } finally {
         setIsLoading(false)
       }
     };
@@ -73,7 +80,7 @@ const LeaderBoardForm = () => {
   }, [territory_id, date, partner]);
 
   const handleEditClick = () => {
-    setIsEdit(!isEdit); // Toggle edit mode
+    setIsEdit(!isEdit);
   };
 
   return (
