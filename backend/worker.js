@@ -57,18 +57,9 @@ wss.on('connection', (ws) => {
   console.log('Client connected');
 });
 
-// app.use(express.static(path.join(__dirname, '..', 'frontend', 'dist')));
-// // Handle all other routes by serving the index.html file
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, '..', 'frontend', 'dist', 'index.html'));
-// });
 // HTTP Server
 
-// app.use(express.static(path.join(__dirname, '/../frontend/dist')));
 
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, '..', 'frontend', 'dist', 'index.html'));
-// });
 
 const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
@@ -124,7 +115,7 @@ app.get('/api/fetchLeaderBoard', async (req, res) => {
 
 app.get('/api/fetchProductSales', async (req, res) => {
   // console.log("req.query is : ", req.query)
-  const { territory_id, date, partner } = req.query;
+  const { territory_id, date, partner } = req.body;
   console.log('Request received with params:', { territory_id, date, partner });
   // console.log("req.query descturtue", territory_id, date, partner);
   if (!territory_id || !date || !partner) {
@@ -179,3 +170,15 @@ app.put('/api/updateProductSales', async (req, res) => {
     res.status(500).send('Internal server error');
   }
 })
+
+// app.use(express.static(path.join(__dirname, '/../frontend/dist')));
+
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '..', 'frontend', 'dist', 'index.html'));
+// });
+
+app.use(express.static(path.join(__dirname, '/../frontend/dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'dist', 'index.html'));
+});
