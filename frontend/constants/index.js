@@ -6,7 +6,8 @@ export const partnersList = [
     banners: [
       "/assets/partners/at&t/banners/AT&T-1.png",
       "/assets/partners/at&t/banners/AT&T-2.png",
-    ]
+    ],
+    icon: "/assets/att.webp",
   },
   {
     name: "Verizon",
@@ -16,7 +17,8 @@ export const partnersList = [
       "/assets/partners/verizon/banners/Verizon-1.png",
       "/assets/partners/verizon/banners/Verizon-2.png",
       "/assets/partners/verizon/banners/Verizon-3.png",
-    ]
+    ],
+    icon: "/assets/verizon.webp",
   },
   {
     name: "T-Mobile",
@@ -26,7 +28,8 @@ export const partnersList = [
       "/assets/partners/t-mobile/banners/T Mobile-1.png",
       "/assets/partners/t-mobile/banners/T Mobile-2.png",
       "/assets/partners/t-mobile/banners/T Mobile-3.png",
-    ]
+    ],
+    icon: "/assets/tmobile.webp",
   },
   {
     name: "Best Buy",
@@ -36,6 +39,7 @@ export const partnersList = [
       "/assets/partners/verizon/banners/Verizon-1.png",
       "/assets/partners/verizon/banners/Verizon-2.png",
       "/assets/partners/verizon/banners/Verizon-3.png",
-    ]
+    ],
+    icon: "/assets/bestbuy.webp",
   },
-]
+];

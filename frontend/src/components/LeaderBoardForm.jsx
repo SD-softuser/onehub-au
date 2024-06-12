@@ -5,6 +5,8 @@ import useQuery from "../utils/useQuery";
 import { FiEdit3, FiX } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { showLoader, hideLoader } from '../app/slices/loaderSlice';
+import { setCurrentPartner } from "../app/slices/partnerSlice";
+import { partnersList } from "../../constants";
 
 const partners = [
   { name: "AT&T", logo: "assets/att.webp" },
@@ -13,14 +15,15 @@ const partners = [
   { name: "Best Buy", logo: "assets/bestbuy.webp" }
 ];
 
-const PartnerButton = ({ partnerName, selectedPartner, setPartner, icon }) => {
+const PartnerButton = ({ partnerName, selectedPartner, icon }) => {
+  const dispatch = useDispatch()
   return (
     <button
       className={`flex flex-row gap-3 justify-center items-center px-4 py-2 border-[1px] rounded-xl ${selectedPartner === partnerName
         ? "border-googleBlue-500 text-googleBlue-500"
         : ""
         }`}
-      onClick={() => setPartner(partnerName)}
+      onClick={() => dispatch(setCurrentPartner(partnerName))}
     >
       <img src={icon} alt={`${partnerName}`} className="h-6 w-8" />
       <h6>{partnerName}</h6>
@@ -31,7 +34,8 @@ const PartnerButton = ({ partnerName, selectedPartner, setPartner, icon }) => {
 const LeaderBoardForm = () => {
   const query = useQuery();
   const territory_id = query.get("territory_id");
-  const [partner, setPartner] = useState("AT&T");
+  // const [partner, setPartner] = useState("AT&T");
+  const partner = useSelector((state)=>state.partner.currentPartner)
   const [date, setDate] = useState("2024-05-07");
   const [tableData, setTableData] = useState([]);
   const [originalTableData, setOriginalTableData] = useState([]);
@@ -64,7 +68,7 @@ const LeaderBoardForm = () => {
         dispatch(showLoader());
         const encodedTerritory = encodeURIComponent(territory_id);
         const encodedDate = encodeURIComponent(date);
-        const encodedPartner = encodeURIComponent(partner);
+        const encodedPartner = encodeURIComponent(partner.name);
         const response = await axios.get(
           `/api/fetchProductSales?territory_id=${encodedTerritory}&date=${encodedDate}&partner=${encodedPartner}`
         );
@@ -144,13 +148,12 @@ const LeaderBoardForm = () => {
     <div className="bg-white w-full px-4 py-4 rounded-xl shadow-md">
       {/* Partners */}
       <div className="flex gap-3">
-        {partners.map((partnerName) => (
+        {partnersList.map((partnerName) => (
           <PartnerButton
             key={partnerName.name}
             partnerName={partnerName.name}
-            selectedPartner={partner}
-            setPartner={setPartner}
-            icon={partnerName.logo}
+            selectedPartner={partner.name}
+            icon={partnerName.icon}
           />
         ))}
       </div>

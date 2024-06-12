@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
-import axios from 'axios';
-import { Route, Routes } from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import FieldGuide from './pages/FieldGuide';
-import LeaderBoard from './pages/Leaderboard';
+import { useEffect } from "react";
+import axios from "axios";
+import { Route, Routes } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import FieldGuide from "./pages/FieldGuide";
+import LeaderBoard from "./pages/Leaderboard";
 
 function App() {
   // useEffect(() => {
@@ -17,11 +17,11 @@ function App() {
   // }, []);
 
   return (
-    <Routes>
-      <Route path='/' element={<HomePage />} />
-      <Route path='/field-guide' element={<FieldGuide />} />
-      <Route path='/leaderboard' element={<LeaderBoard />} />
-    </Routes>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/field-guide" element={<FieldGuide />} />
+        <Route path="/leaderboard" element={<LeaderBoard />} />
+      </Routes>
   );
 }
 
