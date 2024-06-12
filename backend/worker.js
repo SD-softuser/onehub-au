@@ -128,6 +128,7 @@ app.get('/api/fetchProductSales', async (req, res) => {
       SELECT
         store_name,
         city,
+        MAX(country) AS country,
         MAX(CASE WHEN product_model = 'Pixel 8a' THEN sales ELSE 0 END) AS 'Pixel 8a',
         MAX(CASE WHEN product_model = 'Pixel 8' THEN sales ELSE 0 END) AS 'Pixel 8',
         MAX(CASE WHEN product_model = 'Pixel 8 Pro' THEN sales ELSE 0 END) AS 'Pixel 8 Pro',
@@ -183,8 +184,8 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'frontend', 'dist', 'index.html'));
 });
 
-app.use(express.static(path.join(__dirname, '/../frontend/dist')));
+// app.use(express.static(path.join(__dirname, '/../frontend/dist')));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'frontend', 'dist', 'index.html'));
-});
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '..', 'frontend', 'dist', 'index.html'));
+// });
