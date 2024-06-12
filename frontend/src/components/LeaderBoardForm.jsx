@@ -15,18 +15,18 @@ const partners = [
   { name: "Best Buy", logo: "assets/bestbuy.webp" }
 ];
 
-const PartnerButton = ({ partnerName, selectedPartner, icon }) => {
+const PartnerButton = ({ selectedPartner,propPartner }) => {
   const dispatch = useDispatch()
   return (
     <button
-      className={`flex flex-row gap-3 justify-center items-center px-4 py-2 border-[1px] rounded-xl ${selectedPartner === partnerName
+      className={`flex flex-row gap-3 justify-center items-center px-4 py-2 border-[1px] rounded-xl ${selectedPartner === propPartner.name
         ? "border-googleBlue-500 text-googleBlue-500"
         : ""
         }`}
-      onClick={() => dispatch(setCurrentPartner(partnerName))}
+      onClick={() => dispatch(setCurrentPartner(propPartner))}
     >
-      <img src={icon} alt={`${partnerName}`} className="h-6 w-8" />
-      <h6>{partnerName}</h6>
+      <img src={propPartner.icon} alt={`${propPartner.name}`} className="h-6 w-8" />
+      <h6>{propPartner.name}</h6>
     </button>
   );
 };
@@ -151,9 +151,8 @@ const LeaderBoardForm = () => {
         {partnersList.map((partnerName) => (
           <PartnerButton
             key={partnerName.name}
-            partnerName={partnerName.name}
             selectedPartner={partner.name}
-            icon={partnerName.icon}
+            propPartner={partnerName}
           />
         ))}
       </div>
