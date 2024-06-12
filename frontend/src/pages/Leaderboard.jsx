@@ -10,6 +10,7 @@ import axios from "axios";
 import TrophyDisplay from "../components/TrophyDisplay";
 import { useDispatch, useSelector } from "react-redux";
 import { hideLoader, showLoader } from "../app/slices/loaderSlice";
+import SvgComponent from "../components/SvgComponent";
 
 
 const LeaderBoard = () => {
@@ -91,7 +92,7 @@ const LeaderBoard = () => {
       <header className="w-full flex justify-between items-center px-4">
         <div className="flex gap-2 h-full">
           <button
-            className={`px-6 py-2.5 border-[1px] rounded-xl transition ${filters.country === "US" && "border-googleBlue-500"
+            className={`flex flex-row gap-3 justify-center items-center px-6 py-2.5 border-[1px] rounded-xl transition ${filters.country === "US" && "border-googleBlue-500"
               }`}
             onClick={() => {
               setFilters({
@@ -100,10 +101,12 @@ const LeaderBoard = () => {
               });
             }}
           >
-            US
+            <img src="assets/us.webp" alt="US" className="h-6 w-12"/>
+            <p>US</p>
           </button>
           <button
-            className={`px-6 py-2.5 border-[1px] rounded-xl transition ${filters.country === "CA" && "border-googleBlue-500"
+             // disabled for now
+            className={`flex flex-row gap-3 justify-center items-center px-6 py-2.5 border-[1px] rounded-xl transition ${filters.country === "CA" && "border-googleBlue-500"
               }`}
             onClick={() => {
               setFilters({
@@ -112,7 +115,8 @@ const LeaderBoard = () => {
               });
             }}
           >
-            CA
+            <img src="assets/ca.webp" alt="US" className="h-6 w-12"/>
+            <p>CA</p>
           </button>
         </div>
 
@@ -212,11 +216,12 @@ const LeaderBoard = () => {
                   <td className={`px-4 py-2 hover:bg-gray-200 text-gray-500`}>
                     {rowIndex + 1}
                   </td>
-                  {columns.map((colName) => (
+                  {columns.map((colName, colIndex) => (
                     <td
                       key={`${rowIndex}-${colName}`}
-                      className={`px-4 py-2 hover:bg-gray-200`}
+                      className={`px-4 py-2 hover:bg-gray-200 ${colIndex === 1 && "flex gap-2"}`}
                     >
+                      {colIndex === 1 && <SvgComponent />}
                       {row[colName]}
                     </td>
                   ))}

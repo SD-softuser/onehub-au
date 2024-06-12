@@ -27,7 +27,6 @@ const Structure = () => {
           <FormControlLabel control={<Checkbox />} label="Follow the weekly priorities (listed on the following slide) and training materials" />
           <FormControlLabel control={<Checkbox />} label="Check-in to GFA and LILO" />
           <FormControlLabel control={<Checkbox />} label="Connect with Management" />
-          <FormControlLabel control={<Checkbox />} label="Merchandising:" />
           <FormControlLabel control={<Checkbox />} label="Follow the weekly priorities (listed on the following slide) and training materials" />
         </FormGroup>
       </div>

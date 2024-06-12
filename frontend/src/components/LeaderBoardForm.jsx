@@ -2,23 +2,31 @@ import React, { useEffect, useState } from "react";
 import DatePicker from "react-multi-date-picker";
 import axios from "axios";
 import useQuery from "../utils/useQuery";
-import { FiEdit3 } from "react-icons/fi";
-import { useDispatch, useSelector } from "react-redux"
+import { FiEdit3, FiX } from "react-icons/fi";
+import { useDispatch, useSelector } from "react-redux";
 import { showLoader, hideLoader } from '../app/slices/loaderSlice';
+import { setCurrentPartner } from "../app/slices/partnerSlice";
+import { partnersList } from "../../constants";
 
-const partners = ["AT&T", "Verizon", "T-Mobile", "Best Buy"];
+const partners = [
+  { name: "AT&T", logo: "assets/att.webp" },
+  { name: "Verizon", logo: "assets/verizon.webp" },
+  { name: "T-Mobile", logo: "assets/tmobile.webp" },
+  { name: "Best Buy", logo: "assets/bestbuy.webp" }
+];
 
-const PartnerButton = ({ partnerName, selectedPartner, setPartner }) => {
+const PartnerButton = ({ selectedPartner,propPartner }) => {
+  const dispatch = useDispatch()
   return (
     <button
-      className={`px-4 py-2 border-[1px] rounded-xl ${selectedPartner === partnerName
+      className={`flex flex-row gap-3 justify-center items-center px-4 py-2 border-[1px] rounded-xl ${selectedPartner === propPartner.name
         ? "border-googleBlue-500 text-googleBlue-500"
         : ""
         }`}
-      onClick={() => setPartner(partnerName)}
+      onClick={() => dispatch(setCurrentPartner(propPartner))}
     >
-      <div></div>
-      <h6>{partnerName}</h6>
+      <img src={propPartner.icon} alt={`${propPartner.name}`} className="h-6 w-7" />
+      <h6>{propPartner.name}</h6>
     </button>
   );
 };
@@ -26,14 +34,17 @@ const PartnerButton = ({ partnerName, selectedPartner, setPartner }) => {
 const LeaderBoardForm = () => {
   const query = useQuery();
   const territory_id = query.get("territory_id");
-  const [partner, setPartner] = useState("AT&T");
+  // const [partner, setPartner] = useState("AT&T");
+  const partner = useSelector((state)=>state.partner.currentPartner)
   const [date, setDate] = useState("2024-05-07");
   const [tableData, setTableData] = useState([]);
+  const [originalTableData, setOriginalTableData] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [columns, setColumns] = useState([]);
+  const [changedInputs, setChangedInputs] = useState({});
 
-  const dispatch = useDispatch()
-  const isLoading = useSelector((state) => state.loader.isLoading)
+  const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.loader.isLoading);
 
   const handleDateChange = (e) => {
     const year = e.year;
@@ -54,28 +65,21 @@ const LeaderBoardForm = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        dispatch(showLoader())
+        dispatch(showLoader());
         const encodedTerritory = encodeURIComponent(territory_id);
         const encodedDate = encodeURIComponent(date);
-        const encodedPartner = encodeURIComponent(partner);
+        const encodedPartner = encodeURIComponent(partner.name);
         const response = await axios.get(
           `/api/fetchProductSales?territory_id=${encodedTerritory}&date=${encodedDate}&partner=${encodedPartner}`
         );
-        // const response = await axios.get(`/api/fetchProductSales?territory_id=${encodedTerritory}&date=${encodedDate}&partner=${encodedPartner}`, {
-        //   params: {
-        //     // territory_id: encodedTerritory,
-        //     date: encodedDate,
-        //     partner: encodedPartner
-        //   }
-        // });
 
-        console.log(response.data);
         setTableData(response.data);
+        setOriginalTableData(response.data);
         setColumns(getUniqueColumns(response.data));
       } catch (err) {
         console.error("Error fetching data:", err);
       } finally {
-        dispatch(hideLoader())
+        dispatch(hideLoader());
       }
     };
 
@@ -83,7 +87,53 @@ const LeaderBoardForm = () => {
   }, [territory_id, date, partner]);
 
   const handleEditClick = () => {
+    if (isEdit) {
+      saveChanges();
+    } else {
+      setOriginalTableData(JSON.parse(JSON.stringify(tableData))); // Save original data for cancel
+    }
     setIsEdit(!isEdit);
+  };
+
+  const handleCancelClick = () => {
+    setTableData(originalTableData); // Revert to original data
+    setChangedInputs({});
+    setIsEdit(false);
+  };
+
+  const handleInputChange = (rowIndex, colName, value) => {
+    const updatedTableData = [...tableData];
+    updatedTableData[rowIndex][colName] = value;
+    setTableData(updatedTableData);
+
+    const key = `${rowIndex}-${colName}`;
+    setChangedInputs((prev) => ({
+      ...prev,
+      [key]: { rowIndex, colName, value }
+    }));
+  };
+
+  const saveChanges = async () => {
+    try {
+      dispatch(showLoader());
+      for (const key in changedInputs) {
+        const { rowIndex, colName, value } = changedInputs[key];
+        const row = tableData[rowIndex];
+        if (colName !== "store_name" && colName !== "city") {
+          await axios.put('/api/updateProductSales', {
+            sales: value,
+            store_name: row.store_name,
+            productModel: colName,
+            date: date
+          });
+        }
+      }
+      setChangedInputs({});
+    } catch (err) {
+      console.error("Error saving data:", err);
+    } finally {
+      dispatch(hideLoader());
+    }
   };
 
   if (isLoading) {
@@ -91,19 +141,18 @@ const LeaderBoardForm = () => {
       <div>
         <h1>Loading...</h1>
       </div>
-    )
+    );
   }
 
   return (
     <div className="bg-white w-full px-4 py-4 rounded-xl shadow-md">
       {/* Partners */}
       <div className="flex gap-3">
-        {partners.map((partnerName) => (
+        {partnersList.map((partnerName) => (
           <PartnerButton
-            key={partnerName}
-            partnerName={partnerName}
-            selectedPartner={partner}
-            setPartner={setPartner}
+            key={partnerName.name}
+            selectedPartner={partner.name}
+            propPartner={partnerName}
           />
         ))}
       </div>
@@ -141,6 +190,14 @@ const LeaderBoardForm = () => {
         >
           {isEdit ? "Save" : "Edit"} <FiEdit3 />
         </button>
+        {isEdit && (
+          <button
+            className="border-2 border-gray-200 p-3 rounded-xl flex-row flex justify-center items-center gap-2 hover:bg-gray-300"
+            onClick={handleCancelClick}
+          >
+            Cancel <FiX />
+          </button>
+        )}
       </div>
 
       <table className="table-auto w-full my-3">
@@ -165,12 +222,12 @@ const LeaderBoardForm = () => {
               className={`border border-gray-300`}
             >
               {columns.map((colName) => (
-                <td key={`${rowIndex}-${colName}`} className={` hover:bg-gray-100 ${colName === 'store_name' ? 'will-change-scroll w-96' : ''}`}>
+                <td key={`${rowIndex}-${colName}`} className={`hover:bg-gray-100 ${colName === 'store_name' ? 'will-change-scroll w-96' : ''}`}>
                   <input
                     type="text"
                     value={row[colName]}
-                    // onChange={(e) => handleChange(rowIndex, colName, e)}
-                    disabled={!isEdit}
+                    onChange={(e) => handleInputChange(rowIndex, colName, e.target.value)}
+                    disabled={!isEdit || colName === "store_name" || colName === "city"}
                     className="border border-gray-300 w-full px-4 py-1 outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
                   />
                 </td>
