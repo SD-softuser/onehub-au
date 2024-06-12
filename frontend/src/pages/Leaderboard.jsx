@@ -105,6 +105,7 @@ const LeaderBoard = () => {
             <p>US</p>
           </button>
           <button
+            disabled // disabled for now
             className={`flex flex-row gap-3 justify-center items-center px-6 py-2.5 border-[1px] rounded-xl transition ${filters.country === "CA" && "border-googleBlue-500"
               }`}
             onClick={() => {

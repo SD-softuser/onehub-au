@@ -225,7 +225,7 @@ const LeaderBoardForm = () => {
                     type="text"
                     value={row[colName]}
                     onChange={(e) => handleInputChange(rowIndex, colName, e.target.value)}
-                    disabled={!isEdit}
+                    disabled={!isEdit || colName === "store_name" || colName === "city"}
                     className="border border-gray-300 w-full px-4 py-1 outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
                   />
                 </td>
