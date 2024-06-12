@@ -6,12 +6,16 @@ import { Link } from 'react-router-dom';
 import useQuery from '../utils/useQuery';
 import LeaderBoardForm from '../components/LeaderBoardForm';
 import axios from 'axios'
+import { partnersList } from '../../constants';
 
 const HomePage = () => {
 
   const [opened, setOpened] = useState(false)
 
   const query = useQuery()
+
+  const [currentPartner, setCurrentPartner] = useState(partnersList[0])
+  console.log(currentPartner);
 
   // useEffect(() => {
   //   const fetch = async () => {
@@ -37,7 +41,7 @@ const HomePage = () => {
 
       <main className='w-full bg-white rounded-lg px-6 py-10 shadow-md'>
         <div className='flex justify-center items-center gap-4 px-4 py-1 rounded-full shadow-md'>
-          <div>
+          {/* <div>
             <img
               src='assets/Best Buy Button.png'
             />
@@ -56,18 +60,18 @@ const HomePage = () => {
             <img
               src='assets/Unnamed Button.png'
             />
-          </div>
+          </div> */}
+          {partnersList.map((partner, index) => (
+            <div onClick={() => setCurrentPartner(partner)}>
+              {currentPartner.name === partner.name ? <img src={partner.imageChecked} /> : <img src={partner.image} />}
+            </div>
+          ))}
         </div>
 
         <div className={`relative grid grid-cols-2 mt-4 gap-4 ${opened ? 'h-full' : 'h-60 overflow-hidden'}`}>
-          <img src='assets/Bell-1.png' />
-          <img src='assets/Bell-2.png' />
-          <img src='assets/Bell-3.png' />
-          <img src='assets/Bell-4.png' />
-          <img src='assets/Bell-1.png' />
-          <img src='assets/Bell-2.png' />
-          <img src='assets/Bell-3.png' />
-          <img src='assets/Bell-4.png' />
+          {currentPartner.banners.map((banner, index) => (
+            <img src={banner} key={index} />
+          ))}
           {!opened && <div className='absolute h-full w-full bg-gradient-to-t from-white to-transparent to-40%'></div>}
         </div>
 
