@@ -6,17 +6,28 @@ import { Link } from "react-router-dom";
 import useQuery from "../utils/useQuery";
 import LeaderBoardForm from "../components/LeaderBoardForm";
 import axios from "axios";
-import { partnersList } from "../../constants";
-import { setCurrentPartner } from "../app/slices/partnerSlice";
+import { partnersList, CApartnersList } from "../../constants";
+import { setCurrentPartnerState } from "../app/slices/currentPartnerSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const HomePage = () => {
   const [opened, setOpened] = useState(false);
   const query = useQuery();
+  const territory_id = query.get("territory_id");
+  const [country, setCountry] = useState("CA");
   const dispatch = useDispatch();
-  const currentPartner = useSelector((state) => state.partner.currentPartner);
+  const currentPartnerUS = useSelector((state) => state.partner.currentPartner);
+  const currentPartnerCA = useSelector(
+    (state) => state.partnerCA.currentPartner
+  );
+  const currentPartner = useSelector((state) => state.currentPartner);
+  console.log(currentPartner)
   const partnerState = (partner) => {
-    dispatch(setCurrentPartner(partner));
+    if (country === "US") {
+      dispatch(setCurrentPartnerState(partner))
+    } else {
+      dispatch(setCurrentPartnerState(partner))
+    }
   };
 
   // useEffect(() => {
@@ -27,6 +38,26 @@ const HomePage = () => {
   //   }
   //   fetch()
   // })
+  useEffect(() => {
+    const fetch = async () => {
+      const encodedTerritory = encodeURIComponent(territory_id);
+      const response = await axios.get(
+        `/api/fetchCountry?territory_id=${encodedTerritory}`
+      );
+      const data = response.data;
+      setCountry(data[0].country);
+    };
+    fetch();
+  }, [territory_id]);
+
+  useEffect(() => {
+    if (country === "US") {
+      dispatch(setCurrentPartnerState(currentPartnerUS));
+    } else {
+      dispatch(setCurrentPartnerState(currentPartnerCA));
+      console.log("set CA");
+    }
+  }, [country]);
 
   return (
     <MaxWidthWrapper className="flex flex-col gap-6">
@@ -57,18 +88,33 @@ const HomePage = () => {
               src='assets/Unnamed Button.png'
             />
           </div> */}
-          {partnersList.map((partner, index) => (
-            <div
-              className="cursor-pointer"
-              onClick={() => partnerState(partner)}
-            >
-              {currentPartner.name === partner.name ? (
-                <img src={partner.imageChecked} />
-              ) : (
-                <img src={partner.image} />
-              )}
-            </div>
-          ))}
+          {country === "CA"
+            ? CApartnersList.map((partner, index) => (
+                <div
+                  className="cursor-pointer"
+                  onClick={() => partnerState(partner)}
+                  key={index}
+                >
+                  {currentPartner.name === partner.name ? (
+                    <img className="border-2 border-blue-400 rounded-full" src={partner.image} alt={partner.name} />
+                  ) : (
+                    <img src={partner.image} alt={partner.name} />
+                  )}
+                </div>
+              ))
+            : partnersList.map((partner, index) => (
+                <div
+                  className="cursor-pointer"
+                  onClick={() => partnerState(partner)}
+                  key={index}
+                >
+                  {currentPartner.name === partner.name ? (
+                    <img className="border-2 border-blue-400 rounded-full" src={partner.image} alt={partner.name} />
+                  ) : (
+                    <img src={partner.image} alt={partner.name} />
+                  )}
+                </div>
+              ))}
         </div>
 
         <div
