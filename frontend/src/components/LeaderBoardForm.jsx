@@ -25,7 +25,7 @@ const PartnerButton = ({ selectedPartner,propPartner }) => {
         }`}
       onClick={() => dispatch(setCurrentPartner(propPartner))}
     >
-      <img src={propPartner.icon} alt={`${propPartner.name}`} className="h-6 w-8" />
+      <img src={propPartner.icon} alt={`${propPartner.name}`} className="h-6 w-7" />
       <h6>{propPartner.name}</h6>
     </button>
   );

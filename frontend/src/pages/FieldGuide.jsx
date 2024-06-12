@@ -34,7 +34,7 @@ const FieldGuide = () => {
           <Weekly />
         )}
 
-        <div className='bg-white flex gap-2 p-2 rounded-full shadow-xl'>
+        <div className='bg-white flex gap-2 p-2 rounded-full shadow-xl mt-5'>
           <button
             className={`transition py-3 w-full rounded-full ${mode === 'structure' ? "bg-googleBlue-500 text-white" : "bg-googleBlue-50"}`}
             onClick={() => setMode('structure')}

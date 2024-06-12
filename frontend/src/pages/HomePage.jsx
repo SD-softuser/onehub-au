@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MaxWidthWrapper from "../components/MaxWidthWrapper";
-import { FaChevronDown } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { HiOutlineArrowTopRightOnSquare } from "react-icons/hi2";
 import { Link } from "react-router-dom";
 import useQuery from "../utils/useQuery";
@@ -85,11 +85,11 @@ const HomePage = () => {
         </div>
 
         <button
-          className="mx-auto bg bg-googleBlue-100 text-googleBlue-500 px-6 py-1.5 rounded-full font-medium flex justify-center items-center text-sm gap-2"
+          className="mx-auto bg bg-googleBlue-100 text-googleBlue-500 px-6 py-1.5 rounded-full font-medium flex justify-center items-center text-sm gap-2 my-2"
           onClick={() => setOpened(!opened)}
         >
-          <h2>View All</h2>
-          <FaChevronDown />
+          <h2>{opened ? "Collapse" : "View All"}</h2>
+          {opened ? <FaChevronUp /> : <FaChevronDown />}
         </button>
 
         <div className="w-full bg-[#F5F5F5] flex justify-between px-3 py-2 rounded-xl mt-4">
