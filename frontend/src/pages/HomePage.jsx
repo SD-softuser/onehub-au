@@ -61,12 +61,12 @@ const HomePage = () => {
 
   return (
     <MaxWidthWrapper className="flex flex-col gap-6">
-      <header className="w-full flex justify-center items-center py-2.5 gap-2">
+      {/* <header className="w-full flex justify-center items-center py-2.5 gap-2">
         <img src="/Google Logo.png" alt="Google" className="h-10 w-10" />
         <h1 className="font-bold text-3xl">Store Hub</h1>
-      </header>
+      </header> */}
 
-      <main className="w-full bg-white rounded-lg px-6 py-10 shadow-md">
+      <main className="w-full bg-white rounded-lg px-6 py-10 shadow-md mt-8">
         <div className="flex justify-center items-center gap-4 px-4 py-1 rounded-full shadow-md">
           {/* <div>
             <img
