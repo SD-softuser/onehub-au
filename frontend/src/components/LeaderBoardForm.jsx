@@ -252,7 +252,7 @@ const LeaderBoardForm = () => {
         </thead>
         {/* Table Body */}
         <tbody>
-          {tableData.map((row, rowIndex) => (
+          {tableData ? tableData.map((row, rowIndex) => (
             <tr
               key={rowIndex}
               className={`border border-gray-300`}
@@ -269,7 +269,9 @@ const LeaderBoardForm = () => {
                 </td>
               ))}
             </tr>
-          ))}
+          )) : (
+            <h1>No Stores Found</h1>
+          )}
         </tbody>
       </table>
     </div>
