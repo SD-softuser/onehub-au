@@ -18,6 +18,8 @@ const LeaderBoard = () => {
   const isLoading = useSelector((state) => state.loader.isLoading)
   console.log("loading ? ", isLoading);
 
+  const [partners, setPartners] = useState(["Overall", "AT&T", "Verizon", "T-Mobile", "Best Buy"])
+
   const [filters, setFilters] = useState({
     country: "US",
     startdate: "2024-05-07",
@@ -97,25 +99,29 @@ const LeaderBoard = () => {
             onClick={() => {
               setFilters({
                 ...filters,
+                partner: "Overall",
                 country: encodeURIComponent("US"),
               });
+              setPartners(["Overall", "AT&T", "Verizon", "T-Mobile", "Best Buy"]);
             }}
           >
-            <img src="assets/us.webp" alt="US" className="h-6 w-12"/>
+            <img src="assets/us.webp" alt="US" className="h-6 w-12" />
             <p>US</p>
           </button>
           <button
-             // disabled for now
+            // disabled for now
             className={`flex flex-row gap-3 justify-center items-center px-6 py-2.5 border-[1px] rounded-xl transition ${filters.country === "CA" && "border-googleBlue-500"
               }`}
             onClick={() => {
               setFilters({
                 ...filters,
+                partner: "Overall",
                 country: encodeURIComponent("CA"),
               });
+              setPartners(["Overall", "Best Buy", "Telus", "Roger", "Bell", "Videotron"]);
             }}
           >
-            <img src="assets/ca.webp" alt="US" className="h-6 w-12"/>
+            <img src="assets/ca.webp" alt="US" className="h-6 w-12" />
             <p>CA</p>
           </button>
         </div>
@@ -137,11 +143,9 @@ const LeaderBoard = () => {
                 });
               }}
             >
-              <MenuItem value={"Overall"}>Overall</MenuItem>
-              <MenuItem value={"AT&T"}>AT&T</MenuItem>
-              <MenuItem value={"Verizon"}>Verizon</MenuItem>
-              <MenuItem value={"T-Mobile"}>T-Mobile</MenuItem>
-              <MenuItem value={"Best Buy"}>Best Buy</MenuItem>
+              {partners.map(partner => (
+                <MenuItem value={partner}>{partner}</MenuItem>
+              ))}
             </Select>
           </FormControl>
 

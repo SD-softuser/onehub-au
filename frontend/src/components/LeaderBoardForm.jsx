@@ -270,7 +270,7 @@ const LeaderBoardForm = () => {
               ))}
             </tr>
           )) : (
-            <h1>No Stores Found</h1>
+            <h1>No Data Found</h1>
           )}
         </tbody>
       </table>
