@@ -17,11 +17,16 @@ function App() {
   // }, []);
 
   return (
+    <>
+      <header className="fixed text-center bg-yellow-500/80 w-full backdrop-blur-xl z-50 py-1">
+        This is for testing only
+      </header>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/field-guide" element={<FieldGuide />} />
         <Route path="/leaderboard" element={<LeaderBoard />} />
       </Routes>
+    </>
   );
 }
 
