@@ -140,7 +140,11 @@ app.get('/api/fetchProductSales', async (req, res) => {
     const rows = await connection.query(query, values);
     connection.release();  // Release the connection back to the pool
     // console.log(rows);
+    if(rows.length===0){
+      res.status(204).json("data does not exist")
+    }
     res.status(200).json(rows);
+  
   } catch (err) {
     console.error(err);
     res.status(500).send('Internal server error');
