@@ -5,8 +5,8 @@ import useQuery from "../utils/useQuery";
 import { FiEdit3, FiX } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { showLoader, hideLoader } from '../app/slices/loaderSlice';
-import { setCurrentPartner } from "../app/slices/partnerSlice";
-import { partnersList } from "../../constants";
+import {setCurrentPartnerState} from "../app/slices/currentPartnerSlice"
+import { partnersList,CApartnersList } from "../../constants";
 
 const partners = [
   { name: "AT&T", logo: "assets/att.webp" },
@@ -17,13 +17,14 @@ const partners = [
 
 const PartnerButton = ({ selectedPartner,propPartner }) => {
   const dispatch = useDispatch()
+  console.log(propPartner, "selected partner")
   return (
     <button
       className={`flex flex-row gap-3 justify-center items-center px-4 py-2 border-[1px] rounded-xl ${selectedPartner === propPartner.name
         ? "border-googleBlue-500 text-googleBlue-500"
         : ""
         }`}
-      onClick={() => dispatch(setCurrentPartner(propPartner))}
+      onClick={() => dispatch(setCurrentPartnerState(propPartner))}
     >
       <img src={propPartner.icon} alt={`${propPartner.name}`} className="h-6 w-7" />
       <h6>{propPartner.name}</h6>
@@ -35,7 +36,13 @@ const LeaderBoardForm = () => {
   const query = useQuery();
   const territory_id = query.get("territory_id");
   // const [partner, setPartner] = useState("AT&T");
-  const partner = useSelector((state)=>state.partner.currentPartner)
+  const [country, setCountry] = useState("CA");
+  const currentPartnerUS = useSelector((state) => state.partner.currentPartner);
+  const currentPartnerCA = useSelector(
+    (state) => state.partnerCA.currentPartner
+  );
+  const partner = useSelector((state) => state.currentPartner);
+
   const [date, setDate] = useState("2024-05-07");
   const [tableData, setTableData] = useState([]);
   const [originalTableData, setOriginalTableData] = useState([]);
@@ -85,6 +92,27 @@ const LeaderBoardForm = () => {
 
     fetchData();
   }, [territory_id, date, partner]);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const encodedTerritory = encodeURIComponent(territory_id);
+      const response = await axios.get(
+        `/api/fetchCountry?territory_id=${encodedTerritory}`
+      );
+      const data = response.data;
+      setCountry(data[0].country);
+    };
+    fetch();
+  }, [territory_id]);
+
+  useEffect(() => {
+    if (country === "US") {
+      dispatch(setCurrentPartnerState(currentPartnerUS));
+    } else {
+      dispatch(setCurrentPartnerState(currentPartnerCA));
+      console.log("set CA");
+    }
+  }, [country]);
 
   const handleEditClick = () => {
     if (isEdit) {
@@ -148,13 +176,21 @@ const LeaderBoardForm = () => {
     <div className="bg-white w-full px-4 py-4 rounded-xl shadow-md">
       {/* Partners */}
       <div className="flex gap-3">
-        {partnersList.map((partnerName) => (
+        {/* {countrypartnersList.map((partnerName) => (
           <PartnerButton
             key={partnerName.name}
             selectedPartner={partner.name}
             propPartner={partnerName}
+            state={setCurrentPartnerState}
           />
-        ))}
+        ))} */}
+        {(country === 'CA' ? CApartnersList : partnersList).map((partnerName) => (
+            <PartnerButton
+              key={partnerName.name}
+              selectedPartner={partner.name}
+              propPartner={partnerName}
+            />
+          ))}
       </div>
 
       {/* Calendar */}
