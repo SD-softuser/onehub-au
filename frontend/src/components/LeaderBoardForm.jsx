@@ -4,29 +4,26 @@ import axios from "axios";
 import useQuery from "../utils/useQuery";
 import { FiEdit3, FiX } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
-import { showLoader, hideLoader } from '../app/slices/loaderSlice';
-import {setCurrentPartnerState} from "../app/slices/currentPartnerSlice"
-import { partnersList,CApartnersList } from "../../constants";
+import { showLoader, hideLoader } from "../app/slices/loaderSlice";
+import { setCurrentPartnerState } from "../app/slices/currentPartnerSlice";
+import { partnersList, CApartnersList } from "../../constants";
 
-const partners = [
-  { name: "AT&T", logo: "assets/att.webp" },
-  { name: "Verizon", logo: "assets/verizon.webp" },
-  { name: "T-Mobile", logo: "assets/tmobile.webp" },
-  { name: "Best Buy", logo: "assets/bestbuy.webp" }
-];
-
-const PartnerButton = ({ selectedPartner,propPartner }) => {
-  const dispatch = useDispatch()
-  console.log(propPartner, "selected partner")
+const PartnerButton = ({ selectedPartner, propPartner }) => {
+  const dispatch = useDispatch();
   return (
     <button
-      className={`flex flex-row gap-3 justify-center items-center px-4 py-2 border-[1px] rounded-xl ${selectedPartner === propPartner.name
-        ? "border-googleBlue-500 text-googleBlue-500"
-        : ""
-        }`}
+      className={`flex flex-row gap-3 justify-center items-center px-4 py-2 border-[1px] rounded-xl ${
+        selectedPartner === propPartner.name
+          ? "border-googleBlue-500 text-googleBlue-500"
+          : ""
+      }`}
       onClick={() => dispatch(setCurrentPartnerState(propPartner))}
     >
-      <img src={propPartner.icon} alt={`${propPartner.name}`} className="h-6 w-7" />
+      <img
+        src={propPartner.icon}
+        alt={`${propPartner.name}`}
+        className="h-6 w-7"
+      />
       <h6>{propPartner.name}</h6>
     </button>
   );
@@ -42,12 +39,32 @@ const LeaderBoardForm = () => {
     (state) => state.partnerCA.currentPartner
   );
   const partner = useSelector((state) => state.currentPartner);
-
-  const [date, setDate] = useState("2024-05-07");
+  const convertDate = (date)=>{
+    const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+  }
+  const [date, setDate] = useState(convertDate(Date.now()));
   const [tableData, setTableData] = useState([]);
   const [originalTableData, setOriginalTableData] = useState([]);
+  const [template, setTemplate] = useState([]);
+  console.log(template);
+  const [allData, setAllData] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
-  const [columns, setColumns] = useState([]);
+  const [isAdd,setIsAdd] = useState(false);
+  const [columns, setColumns] = useState([
+    "store_name",
+    "city",
+    "date",
+    "country",
+    "Pixel 8a",
+    "Pixel 8",
+    "Pixel 8 Pro",
+    "Pixel Watch",
+  ]);
+  // console.log(columns)
   const [changedInputs, setChangedInputs] = useState({});
 
   const dispatch = useDispatch();
@@ -73,25 +90,59 @@ const LeaderBoardForm = () => {
     const fetchData = async () => {
       try {
         dispatch(showLoader());
+        setTableData([]);
         const encodedTerritory = encodeURIComponent(territory_id);
-        const encodedDate = encodeURIComponent(date);
+        // const encodedDate = encodeURIComponent(date);
         const encodedPartner = encodeURIComponent(partner.name);
         const response = await axios.get(
-          `/api/fetchProductSales?territory_id=${encodedTerritory}&date=${encodedDate}&partner=${encodedPartner}`
+          `/api/fetchProductSales?territory_id=${encodedTerritory}&partner=${encodedPartner}`
         );
-
-        setTableData(response.data);
-        setOriginalTableData(response.data);
-        setColumns(getUniqueColumns(response.data));
+        console.log(response.data);
+        setAllData(response.data);
+        setTemplate(response.data);
+        filterDataByDate(response.data, date);
       } catch (err) {
         console.error("Error fetching data:", err);
+        setAllData([]);
       } finally {
         dispatch(hideLoader());
       }
     };
 
     fetchData();
-  }, [territory_id, date, partner]);
+  }, [territory_id, partner, date]);
+
+  const filterDataByDate = (data, selectedDate) => {
+    console.log(selectedDate);
+    const filteredData = data.filter(
+      (item) => formatDate(item.date) === selectedDate
+    );
+    console.log(filteredData);
+    setTableData(filteredData);
+    setOriginalTableData(filteredData);
+    if (filteredData.length > 0) {
+      setColumns(getUniqueColumns(filteredData));
+    } else {
+      console.log("clicked");
+      setColumns([
+        "store_name",
+        "city",
+        "date",
+        "country",
+        "Pixel 8a",
+        "Pixel 8",
+        "Pixel 8 Pro",
+        "Pixel Watch",
+      ]);
+    }
+  };
+  const formatDate = (isoString) => {
+    const date = new Date(isoString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
   useEffect(() => {
     const fetch = async () => {
@@ -121,12 +172,14 @@ const LeaderBoardForm = () => {
       setOriginalTableData(JSON.parse(JSON.stringify(tableData))); // Save original data for cancel
     }
     setIsEdit(!isEdit);
+    setIsAdd(true);
   };
 
   const handleCancelClick = () => {
     setTableData(originalTableData); // Revert to original data
     setChangedInputs({});
     setIsEdit(false);
+    setIsAdd(false)
   };
 
   const handleInputChange = (rowIndex, colName, value) => {
@@ -137,9 +190,11 @@ const LeaderBoardForm = () => {
     const key = `${rowIndex}-${colName}`;
     setChangedInputs((prev) => ({
       ...prev,
-      [key]: { rowIndex, colName, value }
+      [key]: { rowIndex, colName, value },
     }));
   };
+
+  
 
   const saveChanges = async () => {
     try {
@@ -148,11 +203,11 @@ const LeaderBoardForm = () => {
         const { rowIndex, colName, value } = changedInputs[key];
         const row = tableData[rowIndex];
         if (colName !== "store_name" && colName !== "city") {
-          await axios.put('/api/updateProductSales', {
+          await axios.put("/api/updateProductSales", {
             sales: value,
             store_name: row.store_name,
             productModel: colName,
-            date: date
+            date: date,
           });
         }
       }
@@ -163,6 +218,82 @@ const LeaderBoardForm = () => {
       dispatch(hideLoader());
     }
   };
+  const addChanges = async()=>{
+    try {
+      dispatch(showLoader());
+      for (const key in changedInputs) {
+        const { rowIndex, colName, value } = changedInputs[key];
+        const row = tableData[rowIndex];
+          await axios.post("/api/createEntry", {
+            date:date,
+            country:country,
+            partner:partner.name,
+            territory_id:territory_id,
+            sales:value,
+            city:row.city,
+            store_name:row.store_name,
+            productModel:colName
+
+          });
+
+      }
+      const existingStoreNames = new Set(tableData.map(row => row.store_name));
+      console.log(existingStoreNames)
+      for (const row of template) {
+        if (!existingStoreNames.has(row.store_name)) {
+          // Create default row with zero values
+          const defaultRow = {};
+          columns.forEach(colName => {
+            defaultRow[colName] = colName === "store_name" || colName === "city" ? row[colName] : "0";
+          });
+  
+          // Add row with zero values
+          await axios.post("/api/createEntry", {
+            date: date,
+            country: country,
+            partner: partner.name,
+            territory_id: territory_id,
+            city: row.city,
+            store_name: row.store_name,
+            ...defaultRow
+          });
+        }
+      }
+      setChangedInputs({});
+    } catch (err) {
+      console.error("Error saving data:", err);
+    } finally {
+      dispatch(hideLoader());
+    }
+  }
+
+  const createDefaultRow = () => {
+    const defaultRow = {};
+    console.log(columns);
+    columns.forEach((colName) => {
+      defaultRow[colName] =
+        colName === "store_name" || colName === "city" ? "" : "0";
+    });
+    console.log(defaultRow);
+    return defaultRow;
+  };
+  const handleAdd = (rowIndex, colName, value)=>{
+    const updatedTableData = [...tableData];
+    updatedTableData[rowIndex][colName] = value;
+    setTableData(updatedTableData);
+
+    const key = `${rowIndex}-${colName}`;
+    setChangedInputs((prev) => ({
+      ...prev,
+      [key]: { rowIndex, colName, value },
+    }));
+  }
+  const handleAddClick = ()=>{
+    if(isAdd){
+      addChanges()
+    }
+    setIsAdd(!isAdd);
+  }
 
   if (isLoading) {
     return (
@@ -176,21 +307,15 @@ const LeaderBoardForm = () => {
     <div className="bg-white w-full px-4 py-4 rounded-xl shadow-md">
       {/* Partners */}
       <div className="flex gap-3">
-        {/* {countrypartnersList.map((partnerName) => (
-          <PartnerButton
-            key={partnerName.name}
-            selectedPartner={partner.name}
-            propPartner={partnerName}
-            state={setCurrentPartnerState}
-          />
-        ))} */}
-        {(country === 'CA' ? CApartnersList : partnersList).map((partnerName) => (
+        {(country === "CA" ? CApartnersList : partnersList).map(
+          (partnerName) => (
             <PartnerButton
               key={partnerName.name}
               selectedPartner={partner.name}
               propPartner={partnerName}
             />
-          ))}
+          )
+        )}
       </div>
 
       {/* Calendar */}
@@ -234,6 +359,15 @@ const LeaderBoardForm = () => {
             Cancel <FiX />
           </button>
         )}
+        {isAdd && (
+          <button
+            className="border-2 border-gray-200 p-3 rounded-xl flex-row flex justify-center items-center gap-2 hover:bg-gray-300"
+            onClick={handleAddClick}
+          >
+            Add
+          </button>
+        )}
+
       </div>
 
       <table className="table-auto w-full my-3">
@@ -252,7 +386,71 @@ const LeaderBoardForm = () => {
         </thead>
         {/* Table Body */}
         <tbody>
-          {tableData ? tableData.map((row, rowIndex) => (
+          {tableData.length > 0 ? (
+            tableData.map((row, rowIndex) => (
+              <tr key={rowIndex} className={`border border-gray-300`}>
+                {columns.map((colName) => (
+                  <td
+                    key={`${rowIndex}-${colName}`}
+                    className={`hover:bg-gray-100 ${
+                      colName === "store_name" ? "will-change-scroll w-96" : ""
+                    }`}
+                  >
+                    {row.hasOwnProperty(colName) ? (
+            <input
+              type="text"
+              value={row[colName]}
+              onChange={(e) =>
+                handleInputChange(rowIndex, colName, e.target.value)
+              }
+              disabled={
+                !isEdit ||
+                colName === "store_name" ||
+                colName === "city"
+              }
+              className="border border-gray-300 w-full px-4 py-1 outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+            />
+          ) : (
+            <input
+              type="text"
+              value={row[colName] || 0}
+              onChange={(e) =>
+                handleAdd(rowIndex,colName,e.target.value)
+              }
+              disabled={
+                !isAdd ||
+                colName === "store_name" ||
+                colName === "city"
+              }
+              className="border border-gray-300 w-full px-4 py-1 outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+            />
+          )}
+                  </td>
+                ))}
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={columns.length} className="text-center py-4">
+                {allData.length > 0 && template ? (
+                  <div>
+                    {template.map((data, index) => {
+                      const { store_name, city } = data;
+                      // Create a new row based on the template
+                      const newRow = { ...template, store_name, city };
+                      // Set all other values in newRow to zero, except storeName and city
+                      newRow[columns] = 0
+                      console.log(newRow)
+                      setTableData(prevTableData => [...prevTableData, newRow]);
+                    })}
+                  </div>
+                ) : (
+                  "No Partner for this store."
+                )}
+              </td>
+            </tr>
+          )}
+          {/* {tableData ? tableData.map((row, rowIndex) => (
             <tr
               key={rowIndex}
               className={`border border-gray-300`}
@@ -271,7 +469,7 @@ const LeaderBoardForm = () => {
             </tr>
           )) : (
             <h1>No Data Found</h1>
-          )}
+          )} */}
         </tbody>
       </table>
     </div>
