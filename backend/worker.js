@@ -6,6 +6,7 @@ const app = express();
 const compression = require("compression");
 const cors = require("cors");
 const path = require("path");
+const { connect } = require("http2");
 const PORT = 5000;
 app.use(bodyParser.json());
 app.use(express.json());
@@ -108,45 +109,87 @@ app.get("/api/fetchLeaderBoard", async (req, res) => {
 });
 
 
+// app.get("/api/fetchProductSales", async (req, res) => {
+//   // console.log("req.query is : ", req.query)
+//   const { territory_id, partner } = req.body;
+//   console.log("Request received with params:", { territory_id, partner });
+//   // console.log("req.query descturtue", territory_id, date, partner);
+//   if (!territory_id  || !partner) {
+//     return res
+//       .status(400)
+//       .send({
+//         message: "Please provide territory, date, and partner",
+//         data: `${territory_id}, ${partner}`,
+//       });
+//   }
+
+//   try {
+//     const connection = await pool.getConnection();
+//     const query = `
+//      SELECT
+//     store_name,
+//     city,
+//     date,
+//     MAX(country) AS country,
+//     MAX(CASE WHEN product_model = 'Pixel 8a' THEN sales ELSE 0 END) AS 'Pixel 8a',
+//     MAX(CASE WHEN product_model = 'Pixel 8' THEN sales ELSE 0 END) AS 'Pixel 8',
+//     MAX(CASE WHEN product_model = 'Pixel 8 Pro' THEN sales ELSE 0 END) AS 'Pixel 8 Pro',
+//     MAX(CASE WHEN product_model = 'Pixel Watch' THEN sales ELSE 0 END) AS 'Pixel Watch'
+// FROM Daily_sales
+// WHERE territory = ? and partner=?
+// GROUP BY store_name, city, date
+// ORDER BY store_name, date`;
+//     const values = [territory_id, partner];
+//     const rows = await connection.query(query, values);
+//     connection.release(); // Release the connection back to the pool
+//     // console.log(rows);
+//     if(rows.length===0){
+//       res.status(204).json("data does not exist")
+//     }
+//     res.status(200).json(rows);
+  
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send("Internal server error");
+//   }
+// });
+
 app.get("/api/fetchProductSales", async (req, res) => {
-  // console.log("req.query is : ", req.query)
-  const { territory_id, date, partner } = req.query;
-  console.log("Request received with params:", { territory_id, date, partner });
-  // console.log("req.query descturtue", territory_id, date, partner);
-  if (!territory_id || !date || !partner) {
-    return res
-      .status(400)
-      .send({
-        message: "Please provide territory, date, and partner",
-        data: `${territory_id}, ${date}, ${partner}`,
-      });
+  const { territory_id, partner } = req.query;
+  console.log("Request received with params:", { territory_id, partner });
+
+  if (!territory_id || !partner) {
+    return res.status(400).send({
+      message: "Please provide territory and partner",
+      data: `${territory_id}, ${partner}`,
+    });
   }
 
   try {
     const connection = await pool.getConnection();
     const query = `
-      SELECT
-        store_name,
-        city,
-        MAX(country) AS country,
-        MAX(CASE WHEN product_model = 'Pixel 8a' THEN sales ELSE 0 END) AS 'Pixel 8a',
-        MAX(CASE WHEN product_model = 'Pixel 8' THEN sales ELSE 0 END) AS 'Pixel 8',
-        MAX(CASE WHEN product_model = 'Pixel 8 Pro' THEN sales ELSE 0 END) AS 'Pixel 8 Pro',
-        MAX(CASE WHEN product_model = 'Pixel Watch' THEN sales ELSE 0 END) AS 'Pixel Watch'
-      FROM onehub_db_testing.Daily_sales
-      WHERE territory = ? AND date = ? AND partner = ?
-      GROUP BY store_name, city
-      ORDER BY store_name;
-    `;
-    const values = [territory_id, date, partner];
+     SELECT
+      store_name,
+      city,
+      date,
+      MAX(country) AS country,
+      MAX(CASE WHEN product_model = 'Pixel 8a' THEN sales ELSE 0 END) AS 'Pixel 8a',
+      MAX(CASE WHEN product_model = 'Pixel 8' THEN sales ELSE 0 END) AS 'Pixel 8',
+      MAX(CASE WHEN product_model = 'Pixel 8 Pro' THEN sales ELSE 0 END) AS 'Pixel 8 Pro',
+      MAX(CASE WHEN product_model = 'Pixel Watch' THEN sales ELSE 0 END) AS 'Pixel Watch'
+    FROM Daily_sales
+    WHERE territory = ? AND partner = ?
+    GROUP BY store_name, city, date
+    ORDER BY store_name, date`;
+    const values = [territory_id, partner];
     const rows = await connection.query(query, values);
     connection.release(); // Release the connection back to the pool
-    // console.log(rows);
-    if(rows.length===0){
-      res.status(204).json("data does not exist")
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "No data found" });
     }
+
     res.status(200).json(rows);
-  
   } catch (err) {
     console.error(err);
     res.status(500).send("Internal server error");
@@ -204,6 +247,29 @@ app.get("/api/fetchCountry", async (req, res) => {
   }
 });
 
+app.post("/api/createEntry",async(req,res)=>{
+  let {date,country,partner,territory_id,sales,city,store_name,productModel} = req.body;
+  if (!date || !country || !partner || !territory_id || !city || !store_name||!productModel|| !sales){
+    return res.status(400)
+      .send({ message: "Please provide all fields"});
+  }
+  let d=date.split("-");
+  let newDate=d[2]+"-"+d[1]+"-"+d[0];
+  const id=`${newDate}_${country}_${partner}_${territory_id}_${city}_${store_name}_${productModel}`;
+  console.log(id,req.body);
+  
+try {
+  const connection=await pool.getConnection();
+  const query=`insert into onehub_db_testing.Daily_sales (sales,id,product_model ,territory, store_name,city,date,country,partner) values(?,?,?,?,?,?,?,?,?)`;
+  const values=[sales,id,productModel,territory_id,store_name,city,date,country,partner];
+  const rows= await connection.query(query,values);
+  connection.release();
+  res.status(201).json({message:"Entry created successfully"});
+} catch (error) {
+ console.error(error);
+ res.status(500).send("Internal server error");
+}
+})
 // app.use(express.static(path.join(__dirname, '/../frontend/dist')));
 
 // app.get('*', (req, res) => {
