@@ -94,6 +94,7 @@ const LeaderBoardForm = () => {
         const encodedTerritory = encodeURIComponent(territory_id);
         // const encodedDate = encodeURIComponent(date);
         const encodedPartner = encodeURIComponent(partner.name);
+        console.log(encodedPartner);
         const response = await axios.get(
           `/api/fetchProductSales?territory_id=${encodedTerritory}&partner=${encodedPartner}`
         );
@@ -121,8 +122,10 @@ const LeaderBoardForm = () => {
     setTableData(filteredData);
     setOriginalTableData(filteredData);
     if (filteredData.length > 0) {
+      setIsAdd(false)
       setColumns(getUniqueColumns(filteredData));
     } else {
+      setIsAdd(true)
       // console.log("clicked");
       setColumns([
         "store_name",
@@ -172,7 +175,6 @@ const LeaderBoardForm = () => {
       setOriginalTableData(JSON.parse(JSON.stringify(tableData))); // Save original data for cancel
     }
     setIsEdit(!isEdit);
-    setIsAdd(true);
   };
 
   const handleCancelClick = () => {
@@ -389,26 +391,36 @@ const LeaderBoardForm = () => {
       </div>
 
       <div className="flex gap-2 justify-end items-center py-3 text-blue-600">
-        <button
-          className="border-2 border-gray-200 p-3 rounded-xl flex-row flex justify-center items-center gap-2 hover:bg-gray-300"
-          onClick={handleEditClick}
-        >
-          {isEdit ? "Save" : "Edit"} <FiEdit3 />
-        </button>
+        {!isEdit && (
+          <button
+            className="border-2 border-gray-200 p-3 rounded-xl flex-row flex justify-center items-center gap-2 hover:bg-gray-300"
+            onClick={handleEditClick}
+          >
+            Edit <FiEdit3 />
+          </button>
+        )}
+        {!isAdd && isEdit && (
+          <button
+            className="border-2 border-gray-200 p-3 rounded-xl flex-row flex justify-center items-center gap-2 hover:bg-gray-300"
+            onClick={handleEditClick}
+          >
+            Save <FiEdit3 />
+          </button>
+        )}
+        {isAdd && isEdit && (
+          <button
+            className="border-2 border-gray-200 p-3 rounded-xl flex-row flex justify-center items-center gap-2 hover:bg-gray-300"
+            onClick={handleAddClick}
+          >
+            Add
+          </button>
+        )}
         {isEdit && (
           <button
             className="border-2 border-gray-200 p-3 rounded-xl flex-row flex justify-center items-center gap-2 hover:bg-gray-300"
             onClick={handleCancelClick}
           >
             Cancel <FiX />
-          </button>
-        )}
-        {isAdd && (
-          <button
-            className="border-2 border-gray-200 p-3 rounded-xl flex-row flex justify-center items-center gap-2 hover:bg-gray-300"
-            onClick={handleAddClick}
-          >
-            Add
           </button>
         )}
 

@@ -185,10 +185,6 @@ app.get("/api/fetchProductSales", async (req, res) => {
     const rows = await connection.query(query, values);
     connection.release(); // Release the connection back to the pool
 
-    if (rows.length === 0) {
-      return res.status(404).json({ message: "No data found" });
-    }
-
     res.status(200).json(rows);
   } catch (err) {
     console.error(err);
