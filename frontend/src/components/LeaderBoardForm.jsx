@@ -435,7 +435,7 @@ const LeaderBoardForm = () => {
                 key={colName}
                 className={`px-4 py-2 border border-gray-300 text-left`}
               >
-                {colName}
+                 {colName === "store_name" ? "Store Name" : colName === "city" ? "City" : colName}
               </th>
             ))}
           </tr>
@@ -506,30 +506,12 @@ const LeaderBoardForm = () => {
                   })}
                 </div>
               ) : (
-                "No Partner for this store."
+                <div className="text-red-500 mt-5">No Partner for this store.</div>
+                
               )}
             </tr>
           )}
-          {/* {tableData ? tableData.map((row, rowIndex) => (
-            <tr
-              key={rowIndex}
-              className={`border border-gray-300`}
-            >
-              {columns.map((colName) => (
-                <td key={`${rowIndex}-${colName}`} className={`hover:bg-gray-100 ${colName === 'store_name' ? 'will-change-scroll w-96' : ''}`}>
-                  <input
-                    type="text"
-                    value={row[colName]}
-                    onChange={(e) => handleInputChange(rowIndex, colName, e.target.value)}
-                    disabled={!isEdit || colName === "store_name" || colName === "city"}
-                    className="border border-gray-300 w-full px-4 py-1 outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </td>
-              ))}
-            </tr>
-          )) : (
-            <h1>No Data Found</h1>
-          )} */}
+          
         </tbody>
       </table>
     </div>
