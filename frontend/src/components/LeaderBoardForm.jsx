@@ -12,11 +12,10 @@ const PartnerButton = ({ selectedPartner, propPartner }) => {
   const dispatch = useDispatch();
   return (
     <button
-      className={`flex flex-row gap-3 justify-center items-center px-4 py-2 border-[1px] rounded-xl ${
-        selectedPartner === propPartner.name
-          ? "border-googleBlue-500 text-googleBlue-500"
-          : ""
-      }`}
+      className={`flex flex-row gap-3 justify-center items-center px-4 py-2 border-[1px] rounded-xl ${selectedPartner === propPartner.name
+        ? "border-googleBlue-500 text-googleBlue-500"
+        : ""
+        }`}
       onClick={() => dispatch(setCurrentPartnerState(propPartner))}
     >
       <img
@@ -39,21 +38,22 @@ const LeaderBoardForm = () => {
     (state) => state.partnerCA.currentPartner
   );
   const partner = useSelector((state) => state.currentPartner);
-  const convertDate = (date)=>{
+  const convertDate = (date) => {
     const d = new Date(date);
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
   const [date, setDate] = useState(convertDate(Date.now()));
   const [tableData, setTableData] = useState([]);
+  console.log(tableData);
   const [originalTableData, setOriginalTableData] = useState([]);
   const [template, setTemplate] = useState([]);
-  console.log(template);
+  // console.log(template);
   const [allData, setAllData] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
-  const [isAdd,setIsAdd] = useState(false);
+  const [isAdd, setIsAdd] = useState(false);
   const [columns, setColumns] = useState([
     "store_name",
     "city",
@@ -97,7 +97,7 @@ const LeaderBoardForm = () => {
         const response = await axios.get(
           `/api/fetchProductSales?territory_id=${encodedTerritory}&partner=${encodedPartner}`
         );
-        console.log(response.data);
+        // console.log(response.data);
         setAllData(response.data);
         setTemplate(response.data);
         filterDataByDate(response.data, date);
@@ -113,17 +113,17 @@ const LeaderBoardForm = () => {
   }, [territory_id, partner, date]);
 
   const filterDataByDate = (data, selectedDate) => {
-    console.log(selectedDate);
+    // console.log(selectedDate);
     const filteredData = data.filter(
       (item) => formatDate(item.date) === selectedDate
     );
-    console.log(filteredData);
+    // console.log(filteredData);
     setTableData(filteredData);
     setOriginalTableData(filteredData);
     if (filteredData.length > 0) {
       setColumns(getUniqueColumns(filteredData));
     } else {
-      console.log("clicked");
+      // console.log("clicked");
       setColumns([
         "store_name",
         "city",
@@ -161,7 +161,7 @@ const LeaderBoardForm = () => {
       dispatch(setCurrentPartnerState(currentPartnerUS));
     } else {
       dispatch(setCurrentPartnerState(currentPartnerCA));
-      console.log("set CA");
+      // console.log("set CA");
     }
   }, [country]);
 
@@ -194,7 +194,7 @@ const LeaderBoardForm = () => {
     }));
   };
 
-  
+
 
   const saveChanges = async () => {
     try {
@@ -218,48 +218,95 @@ const LeaderBoardForm = () => {
       dispatch(hideLoader());
     }
   };
-  const addChanges = async()=>{
+  const addChanges = async () => {
     try {
       dispatch(showLoader());
-      for (const key in changedInputs) {
-        const { rowIndex, colName, value } = changedInputs[key];
-        const row = tableData[rowIndex];
-          await axios.post("/api/createEntry", {
-            date:date,
-            country:country,
-            partner:partner.name,
-            territory_id:territory_id,
-            sales:value,
-            city:row.city,
-            store_name:row.store_name,
-            productModel:colName
+      for (const tableRow of tableData) {
+        // console.log(tableData[key].store_name);
+        // console.log("table row", tableRow);
 
-          });
+        const promises = [];
+
+        tableData.forEach(tableRow => {
+          for (const newKey in tableRow) {
+            if (["Pixel 8a", "Pixel 8", "Pixel 8 Pro", "Pixel Watch"].includes(newKey)) {
+              const obj = {
+                date: date,
+                country: country,
+                partner: partner.name,
+                territory_id: territory_id,
+                sales: tableRow[newKey] || '0',
+                city: tableRow.city,
+                store_name: tableRow.store_name,
+                productModel: newKey
+              };
+              console.log(obj);
+              promises.push(axios.post("/api/createEntry", obj));
+            }
+          }
+        });
+
+        await Promise.all(promises);
+        console.log("All requests completed");
+
+        // for (const newKey in tableRow) {
+        //   if (newKey === "Pixel 8a" || newKey === "Pixel 8" || newKey === "Pixel 8 Pro" || newKey === "Pixel Watch") {
+        //     // console.log(newKey);
+        //     const obj = {
+        //       date: date,
+        //       country: country,
+        //       partner: partner.name,
+        //       territory_id: territory_id,
+        //       sales: parseInt(tableRow[newKey]),
+        //       city: tableRow.city,
+        //       store_name: tableRow.store_name,
+        //       productModel: newKey
+        //     }
+        //     console.log(obj);
+        //     await axios.post("/api/createEntry", obj);
+        //   }
+        // }
+
+        // const { rowIndex, colName, value } = tableData[key];
+
+        // const row = tableData[rowIndex];
+        // console.log(row);
+        // await axios.post("/api/createEntry", {
+        //   date: date,
+        //   country: country,
+        //   partner: partner.name,
+        //   territory_id: territory_id,
+        //   sales: parseInt(value),
+        //   city: row.city,
+        //   store_name: row.store_name,
+        //   productModel: colName
+
+        // });
 
       }
-      const existingStoreNames = new Set(tableData.map(row => row.store_name));
-      console.log(existingStoreNames)
-      for (const row of template) {
-        if (!existingStoreNames.has(row.store_name)) {
-          // Create default row with zero values
-          const defaultRow = {};
-          columns.forEach(colName => {
-            defaultRow[colName] = colName === "store_name" || colName === "city" ? row[colName] : "0";
-          });
-  
-          // Add row with zero values
-          await axios.post("/api/createEntry", {
-            date: date,
-            country: country,
-            partner: partner.name,
-            territory_id: territory_id,
-            city: row.city,
-            store_name: row.store_name,
-            ...defaultRow
-          });
-        }
-      }
-      setChangedInputs({});
+      // const existingStoreNames = new Set(tableData.map(row => row.store_name));
+      // // console.log(existingStoreNames)
+      // for (const row of template) {
+      //   if (!existingStoreNames.has(row.store_name)) {
+      //     // Create default row with zero values
+      //     const defaultRow = {};
+      //     columns.forEach(colName => {
+      //       defaultRow[colName] = colName === "store_name" || colName === "city" ? row[colName] : "0";
+      //     });
+
+      //     // Add row with zero values
+      //     await axios.post("/api/createEntry", {
+      //       date: date,
+      //       country: country,
+      //       partner: partner.name,
+      //       territory_id: territory_id,
+      //       city: row.city,
+      //       store_name: row.store_name,
+      //       ...defaultRow
+      //     });
+      //   }
+      // }
+      // setChangedInputs({});
     } catch (err) {
       console.error("Error saving data:", err);
     } finally {
@@ -269,27 +316,27 @@ const LeaderBoardForm = () => {
 
   const createDefaultRow = () => {
     const defaultRow = {};
-    console.log(columns);
+    // console.log(columns);
     columns.forEach((colName) => {
       defaultRow[colName] =
         colName === "store_name" || colName === "city" ? "" : "0";
     });
-    console.log(defaultRow);
+    // console.log(defaultRow);
     return defaultRow;
   };
-  const handleAdd = (rowIndex, colName, value)=>{
+  const handleAdd = (rowIndex, colName, value) => {
     const updatedTableData = [...tableData];
     updatedTableData[rowIndex][colName] = value;
     setTableData(updatedTableData);
 
-    const key = `${rowIndex}-${colName}`;
-    setChangedInputs((prev) => ({
-      ...prev,
-      [key]: { rowIndex, colName, value },
-    }));
+    // const key = `${rowIndex}-${colName}`;
+    // setChangedInputs((prev) => ({
+    //   ...prev,
+    //   [key]: { rowIndex, colName, value },
+    // }));
   }
-  const handleAddClick = ()=>{
-    if(isAdd){
+  const handleAddClick = () => {
+    if (isAdd) {
       addChanges()
     }
     setIsAdd(!isAdd);
@@ -393,39 +440,38 @@ const LeaderBoardForm = () => {
                 {columns.filter(colName => colName !== "date" && colName !== "country").map((colName) => (
                   <td
                     key={`${rowIndex}-${colName}`}
-                    className={`hover:bg-gray-100 ${
-                      colName === "store_name" ? "will-change-scroll w-96" : ""
-                    }`}
+                    className={`hover:bg-gray-100 ${colName === "store_name" ? "will-change-scroll w-96" : ""
+                      }`}
                   >
                     {row.hasOwnProperty(colName) ? (
-            <input
-              type="text"
-              value={row[colName]}
-              onChange={(e) =>
-                handleInputChange(rowIndex, colName, e.target.value)
-              }
-              disabled={
-                !isEdit ||
-                colName === "store_name" ||
-                colName === "city"
-              }
-              className="border border-gray-300 w-full px-4 py-1 outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
-            />
-          ) : (
-            <input
-              type="text"
-              value={row[colName] || 0}
-              onChange={(e) =>
-                handleAdd(rowIndex,colName,e.target.value)
-              }
-              disabled={
-                !isAdd ||
-                colName === "store_name" ||
-                colName === "city"
-              }
-              className="border border-gray-300 w-full px-4 py-1 outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
-            />
-          )}
+                      <input
+                        type="text"
+                        value={row[colName]}
+                        onChange={(e) =>
+                          handleInputChange(rowIndex, colName, e.target.value)
+                        }
+                        disabled={
+                          !isEdit ||
+                          colName === "store_name" ||
+                          colName === "city"
+                        }
+                        className="border border-gray-300 w-full px-4 py-1 outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    ) : (
+                      <input
+                        type="text"
+                        value={row[colName] || 0}
+                        onChange={(e) =>
+                          handleAdd(rowIndex, colName, e.target.value)
+                        }
+                        disabled={
+                          !isAdd ||
+                          colName === "store_name" ||
+                          colName === "city"
+                        }
+                        className="border border-gray-300 w-full px-4 py-1 outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    )}
                   </td>
                 ))}
               </tr>
@@ -433,27 +479,27 @@ const LeaderBoardForm = () => {
           ) : (
             <tr>
               {allData.length > 0 && template ? (
-      <div>
-        {Array.from(new Set(template.map(data => data.store_name))).map((uniqueStoreName, index) => {
-          const data = template.find(item => item.store_name === uniqueStoreName);
-          if (data) {
-            const { store_name, city } = data;
-            // Create a new row based on the template
-            const newRow = { ...data, store_name, city };
-            // Set all other values in newRow to zero, except store_name and city
-            columns.forEach(col => {
-              if (col !== 'store_name' && col !== 'city') {
-                newRow[col] = 0;
-              }
-            });
-            console.log(newRow);
-            setTableData(prevTableData => [...prevTableData, newRow]);
-          }
-        })}
-      </div>
-    ) : (
-      "No Partner for this store."
-    )}
+                <div>
+                  {Array.from(new Set(template.map(data => data.store_name))).map((uniqueStoreName, index) => {
+                    const data = template.find(item => item.store_name === uniqueStoreName);
+                    if (data) {
+                      const { store_name, city } = data;
+                      // Create a new row based on the template
+                      const newRow = { ...data, store_name, city };
+                      // Set all other values in newRow to zero, except store_name and city
+                      columns.forEach(col => {
+                        if (col !== 'store_name' && col !== 'city') {
+                          newRow[col] = 0;
+                        }
+                      });
+                      // console.log(newRow);
+                      setTableData(prevTableData => [...prevTableData, newRow]);
+                    }
+                  })}
+                </div>
+              ) : (
+                "No Partner for this store."
+              )}
             </tr>
           )}
           {/* {tableData ? tableData.map((row, rowIndex) => (

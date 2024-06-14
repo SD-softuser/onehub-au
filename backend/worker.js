@@ -147,7 +147,7 @@ app.get("/api/fetchLeaderBoard", async (req, res) => {
 //       res.status(204).json("data does not exist")
 //     }
 //     res.status(200).json(rows);
-  
+
 //   } catch (err) {
 //     console.error(err);
 //     res.status(500).send("Internal server error");
@@ -247,28 +247,31 @@ app.get("/api/fetchCountry", async (req, res) => {
   }
 });
 
-app.post("/api/createEntry",async(req,res)=>{
-  let {date,country,partner,territory_id,sales,city,store_name,productModel} = req.body;
-  if (!date || !country || !partner || !territory_id || !city || !store_name||!productModel|| !sales){
+app.post("/api/createEntry", async (req, res) => {
+  let { date, country, partner, territory_id, sales, city, store_name, productModel } = req.body;
+
+  console.log(req.body);
+
+  if (!date || !country || !partner || !territory_id || !city || !store_name || !productModel || !sales) {
     return res.status(400)
-      .send({ message: "Please provide all fields"});
+      .send({ message: `Please provide all fields ${date}, ${country}, ${partner}, ${territory_id}, ${sales}, ${city}, ${store_name}, ${productModel}` });
   }
-  let d=date.split("-");
-  let newDate=d[2]+"-"+d[1]+"-"+d[0];
-  const id=`${newDate}_${country}_${partner}_${territory_id}_${city}_${store_name}_${productModel}`;
-  console.log(id,req.body);
-  
-try {
-  const connection=await pool.getConnection();
-  const query=`insert into onehub_db_testing.Daily_sales (sales,id,product_model ,territory, store_name,city,date,country,partner) values(?,?,?,?,?,?,?,?,?)`;
-  const values=[sales,id,productModel,territory_id,store_name,city,date,country,partner];
-  const rows= await connection.query(query,values);
-  connection.release();
-  res.status(201).json({message:"Entry created successfully"});
-} catch (error) {
- console.error(error);
- res.status(500).send("Internal server error");
-}
+  let d = date.split("-");
+  let newDate = d[2] + "-" + d[1] + "-" + d[0];
+  const id = `${newDate}_${country}_${partner}_${territory_id}_${city}_${store_name}_${productModel}`;
+  console.log(id, req.body);
+
+  try {
+    const connection = await pool.getConnection();
+    const query = `insert into onehub_db_testing.Daily_sales (sales,id,product_model ,territory, store_name,city,date,country,partner) values(?,?,?,?,?,?,?,?,?)`;
+    const values = [sales, id, productModel, territory_id, store_name, city, date, country, partner];
+    const rows = await connection.query(query, values);
+    connection.release();
+    res.status(201).json({ message: `Entry created successfully for ${date}, ${country}, ${partner}, ${territory_id}, ${sales}, ${city}, ${store_name}, ${productModel}` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal server error");
+  }
 })
 // app.use(express.static(path.join(__dirname, '/../frontend/dist')));
 
