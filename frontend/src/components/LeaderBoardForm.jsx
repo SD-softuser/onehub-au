@@ -447,8 +447,7 @@ const LeaderBoardForm = () => {
                 {columns.filter(colName => colName !== "date" && colName !== "country").map((colName) => (
                   <td
                     key={`${rowIndex}-${colName}`}
-                    className={`hover:bg-gray-100 ${colName === "store_name" ? "will-change-scroll w-96" : ""
-                      }`}
+                    className={`hover:bg-gray-100 ${colName === "store_name" ? "will-change-scroll w-96" : colName === "city" ? "w-40" : ""}`}
                   >
                     {row.hasOwnProperty(colName) ? (
                       <input
