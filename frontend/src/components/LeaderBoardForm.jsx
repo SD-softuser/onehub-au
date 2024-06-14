@@ -302,6 +302,7 @@ const LeaderBoardForm = () => {
       </div>
     );
   }
+  const filteredColumns = columns.filter(colName => colName !== "date" && colName !== "country");
 
   return (
     <div className="bg-white w-full px-4 py-4 rounded-xl shadow-md">
@@ -374,7 +375,7 @@ const LeaderBoardForm = () => {
         {/* Table Header */}
         <thead>
           <tr>
-            {columns.map((colName) => (
+            {columns.filter(colName => colName !== "date" && colName !== "country").map((colName) => (
               <th
                 key={colName}
                 className={`px-4 py-2 border border-gray-300 text-left`}
@@ -389,7 +390,7 @@ const LeaderBoardForm = () => {
           {tableData.length > 0 ? (
             tableData.map((row, rowIndex) => (
               <tr key={rowIndex} className={`border border-gray-300`}>
-                {columns.map((colName) => (
+                {columns.filter(colName => colName !== "date" && colName !== "country").map((colName) => (
                   <td
                     key={`${rowIndex}-${colName}`}
                     className={`hover:bg-gray-100 ${
@@ -431,23 +432,28 @@ const LeaderBoardForm = () => {
             ))
           ) : (
             <tr>
-              <td colSpan={columns.length} className="text-center py-4">
-                {allData.length > 0 && template ? (
-                  <div>
-                    {template.map((data, index) => {
-                      const { store_name, city } = data;
-                      // Create a new row based on the template
-                      const newRow = { ...template, store_name, city };
-                      // Set all other values in newRow to zero, except storeName and city
-                      newRow[columns] = 0
-                      console.log(newRow)
-                      setTableData(prevTableData => [...prevTableData, newRow]);
-                    })}
-                  </div>
-                ) : (
-                  "No Partner for this store."
-                )}
-              </td>
+              {allData.length > 0 && template ? (
+      <div>
+        {Array.from(new Set(template.map(data => data.store_name))).map((uniqueStoreName, index) => {
+          const data = template.find(item => item.store_name === uniqueStoreName);
+          if (data) {
+            const { store_name, city } = data;
+            // Create a new row based on the template
+            const newRow = { ...data, store_name, city };
+            // Set all other values in newRow to zero, except store_name and city
+            columns.forEach(col => {
+              if (col !== 'store_name' && col !== 'city') {
+                newRow[col] = 0;
+              }
+            });
+            console.log(newRow);
+            setTableData(prevTableData => [...prevTableData, newRow]);
+          }
+        })}
+      </div>
+    ) : (
+      "No Partner for this store."
+    )}
             </tr>
           )}
           {/* {tableData ? tableData.map((row, rowIndex) => (
