@@ -221,69 +221,65 @@ const LeaderBoardForm = () => {
   const addChanges = async () => {
     try {
       dispatch(showLoader());
-      for (const tableRow of tableData) {
-        // console.log(tableData[key].store_name);
-        // console.log("table row", tableRow);
 
-        const promises = [];
+      const promises = [];
 
-        tableData.forEach(tableRow => {
-          for (const newKey in tableRow) {
-            if (["Pixel 8a", "Pixel 8", "Pixel 8 Pro", "Pixel Watch"].includes(newKey)) {
-              const obj = {
-                date: date,
-                country: country,
-                partner: partner.name,
-                territory_id: territory_id,
-                sales: tableRow[newKey] || '0',
-                city: tableRow.city,
-                store_name: tableRow.store_name,
-                productModel: newKey
-              };
-              console.log(obj);
-              promises.push(axios.post("/api/createEntry", obj));
-            }
+      tableData.forEach(tableRow => {
+        for (const newKey in tableRow) {
+          if (["Pixel 8a", "Pixel 8", "Pixel 8 Pro", "Pixel Watch"].includes(newKey)) {
+            const obj = {
+              date: date,
+              country: country,
+              partner: partner.name,
+              territory_id: territory_id,
+              sales: tableRow[newKey] || '0',
+              city: tableRow.city,
+              store_name: tableRow.store_name,
+              productModel: newKey
+            };
+            console.log(obj);
+            promises.push(axios.post("/api/createEntry", obj));
           }
-        });
+        }
+      });
 
-        await Promise.all(promises);
-        console.log("All requests completed");
+      await Promise.all(promises);
+      console.log("All requests completed");
 
-        // for (const newKey in tableRow) {
-        //   if (newKey === "Pixel 8a" || newKey === "Pixel 8" || newKey === "Pixel 8 Pro" || newKey === "Pixel Watch") {
-        //     // console.log(newKey);
-        //     const obj = {
-        //       date: date,
-        //       country: country,
-        //       partner: partner.name,
-        //       territory_id: territory_id,
-        //       sales: parseInt(tableRow[newKey]),
-        //       city: tableRow.city,
-        //       store_name: tableRow.store_name,
-        //       productModel: newKey
-        //     }
-        //     console.log(obj);
-        //     await axios.post("/api/createEntry", obj);
-        //   }
-        // }
+      // for (const newKey in tableRow) {
+      //   if (newKey === "Pixel 8a" || newKey === "Pixel 8" || newKey === "Pixel 8 Pro" || newKey === "Pixel Watch") {
+      //     // console.log(newKey);
+      //     const obj = {
+      //       date: date,
+      //       country: country,
+      //       partner: partner.name,
+      //       territory_id: territory_id,
+      //       sales: parseInt(tableRow[newKey]),
+      //       city: tableRow.city,
+      //       store_name: tableRow.store_name,
+      //       productModel: newKey
+      //     }
+      //     console.log(obj);
+      //     await axios.post("/api/createEntry", obj);
+      //   }
+      // }
 
-        // const { rowIndex, colName, value } = tableData[key];
+      // const { rowIndex, colName, value } = tableData[key];
 
-        // const row = tableData[rowIndex];
-        // console.log(row);
-        // await axios.post("/api/createEntry", {
-        //   date: date,
-        //   country: country,
-        //   partner: partner.name,
-        //   territory_id: territory_id,
-        //   sales: parseInt(value),
-        //   city: row.city,
-        //   store_name: row.store_name,
-        //   productModel: colName
+      // const row = tableData[rowIndex];
+      // console.log(row);
+      // await axios.post("/api/createEntry", {
+      //   date: date,
+      //   country: country,
+      //   partner: partner.name,
+      //   territory_id: territory_id,
+      //   sales: parseInt(value),
+      //   city: row.city,
+      //   store_name: row.store_name,
+      //   productModel: colName
 
-        // });
+      // });
 
-      }
       // const existingStoreNames = new Set(tableData.map(row => row.store_name));
       // // console.log(existingStoreNames)
       // for (const row of template) {
