@@ -92,11 +92,10 @@ const LeaderBoardForm = () => {
         dispatch(showLoader());
         setTableData([]);
         const encodedTerritory = encodeURIComponent(territory_id);
-        // const encodedDate = encodeURIComponent(date);
         const encodedPartner = encodeURIComponent(partner.name);
-        console.log(encodedPartner);
+        const encodedCode = encodeURIComponent(partner.code)
         const response = await axios.get(
-          `/api/fetchProductSales?territory_id=${encodedTerritory}&partner=${encodedPartner}`
+          `/api/fetchProductSales?territory_id=${encodedTerritory}&partner=${encodedPartner}&code=${encodedCode}`
         );
         // console.log(response.data);
         setAllData(response.data);

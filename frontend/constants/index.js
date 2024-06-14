@@ -1,6 +1,7 @@
 export const partnersList = [
   {
     name: "AT&T",
+    code: "ATT%",
     image: "/assets/partners/at&t/at&t.png",
     imageChecked: "/assets/partners/at&t/at&t checked.png",
     banners: [
@@ -11,6 +12,7 @@ export const partnersList = [
   },
   {
     name: "Verizon",
+    code: "VZW%",
     image: "/assets/partners/verizon/Verizon.png",
     imageChecked: "/assets/partners/verizon/Verizon Checked.png",
     banners: [
@@ -22,6 +24,7 @@ export const partnersList = [
   },
   {
     name: "T-Mobile",
+    code: "TMO%",
     image: "/assets/partners/t-mobile/T-Mobile.png",
     imageChecked: "/assets/partners/t-mobile/T-Mobile Checked.png",
     banners: [
@@ -33,6 +36,7 @@ export const partnersList = [
   },
   {
     name: "Best Buy",
+    code: "BBY%",
     image: "/assets/partners/best buy/Best Buy.png",
     imageChecked: "/assets/partners/best buy/Best Buy Checked.png",
     banners: [
@@ -46,7 +50,8 @@ export const partnersList = [
 
 export const CApartnersList = [
   {
-    name: "Best Buy",
+    name: "Best Buy CA",
+    code: "%",
     image: "/assets/partners/bestbuyCA/BestBuyCA.png",
     imageChecked: "/assets/partners/best buy/Best Buy Checked.png",
     banners: [
@@ -58,6 +63,7 @@ export const CApartnersList = [
   },
   {
     name: "Telus",
+    code: "%",
     image: "/assets/partners/telus/TelusButton.png",
     // imageChecked: "/assets/partners/best buy/Best Buy Checked.png",
     banners: [
@@ -68,18 +74,20 @@ export const CApartnersList = [
     icon: "/assets/partners/telus/telus.webp",
   },
   {
-      name: "Roger",
-      image: "/assets/partners/roger/RogerButton.png",
-      // imageChecked: "/assets/partners/best buy/Best Buy Checked.png",
-      banners: [
-        "/assets/partners/roger/Banner1.png",
-        "/assets/partners/roger/Banner2.png",
-        "/assets/partners/roger/Banner3.png",
-      ],
-      icon: "/assets/partners/roger/rogers.webp",
+    name: "Rogers",
+    code: "%",
+    image: "/assets/partners/roger/RogerButton.png",
+    // imageChecked: "/assets/partners/best buy/Best Buy Checked.png",
+    banners: [
+      "/assets/partners/roger/Banner1.png",
+      "/assets/partners/roger/Banner2.png",
+      "/assets/partners/roger/Banner3.png",
+    ],
+    icon: "/assets/partners/roger/rogers.webp",
   },
   {
     name: "Bell",
+    code: "%",
     image: "/assets/partners/bell/bell icon.png",
     // imageChecked: "/assets/partners/best buy/Best Buy Checked.png",
     banners: [
@@ -95,10 +103,11 @@ export const CApartnersList = [
     icon: "/assets/partners/bell/bell.webp",
   },
   {
-    name:"Videotron",
-    icon:"assets/videotron.webp",
-    banners:[],
-    image:"assets/videotron.webp"
+    name: "Videotron",
+    code: "%",
+    icon: "assets/videotron.webp",
+    banners: [],
+    image: "assets/videotron.webp"
   }
-  
+
 ]

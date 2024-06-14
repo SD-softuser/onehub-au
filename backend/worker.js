@@ -155,13 +155,13 @@ app.get("/api/fetchLeaderBoard", async (req, res) => {
 // });
 
 app.get("/api/fetchProductSales", async (req, res) => {
-  const { territory_id, partner } = req.query;
+  const { territory_id, partner, code } = req.query;
   console.log("Request received with params:", { territory_id, partner });
 
-  if (!territory_id || !partner) {
+  if (!territory_id || !partner || !code) {
     return res.status(400).send({
       message: "Please provide territory and partner",
-      data: `${territory_id}, ${partner}`,
+      data: `${territory_id}, ${partner}, ${code}`,
     });
   }
 
@@ -178,10 +178,10 @@ app.get("/api/fetchProductSales", async (req, res) => {
       MAX(CASE WHEN product_model = 'Pixel 8 Pro' THEN sales ELSE 0 END) AS 'Pixel 8 Pro',
       MAX(CASE WHEN product_model = 'Pixel Watch' THEN sales ELSE 0 END) AS 'Pixel Watch'
     FROM Daily_sales
-    WHERE territory = ? AND partner = ?
+    WHERE territory = ? AND partner = ? AND store_name like ?
     GROUP BY store_name, city, date
     ORDER BY store_name, date`;
-    const values = [territory_id, partner];
+    const values = [territory_id, partner, code];
     const rows = await connection.query(query, values);
     connection.release(); // Release the connection back to the pool
 
