@@ -164,7 +164,7 @@ const HomePage = () => {
           className="bg-[#EBEBEB] text-[#333333] rounded-full mt-4 px-4 flex justify-center items-center gap-2"
         >
           <HiOutlineArrowTopRightOnSquare />
-          Assisted LeaderBoard
+          Leaderboard
         </Link>
       </main>
 
