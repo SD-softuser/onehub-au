@@ -12,16 +12,18 @@ import { useDispatch, useSelector } from "react-redux";
 
 const HomePage = () => {
   const [opened, setOpened] = useState(false);
+  const [country, setCountry] = useState("CA");
+
   const query = useQuery();
   const territory_id = query.get("territory_id");
-  const [country, setCountry] = useState("CA");
+  
   const dispatch = useDispatch();
   const currentPartnerUS = useSelector((state) => state.partner.currentPartner);
-  const currentPartnerCA = useSelector(
-    (state) => state.partnerCA.currentPartner
-  );
+  const currentPartnerCA = useSelector((state) => state.partnerCA.currentPartner);
   const currentPartner = useSelector((state) => state.currentPartner);
+
   console.log(currentPartner)
+  
   const partnerState = (partner) => {
     if (country === "US") {
       dispatch(setCurrentPartnerState(partner))
@@ -38,6 +40,7 @@ const HomePage = () => {
   //   }
   //   fetch()
   // })
+
   useEffect(() => {
     const fetch = async () => {
       const encodedTerritory = encodeURIComponent(territory_id);
@@ -119,7 +122,7 @@ const HomePage = () => {
 
         <div
           className={`relative grid grid-cols-2 mt-4 gap-4 ${
-            opened ? "h-full" : "h-60 overflow-hidden"
+            opened || currentPartner.banners.length <= 2 ? "h-full" : "h-60 overflow-hidden"
           }`}
         >
           {currentPartner.banners.map((banner, index) => (
@@ -151,7 +154,14 @@ const HomePage = () => {
             </div>
           </div>
           <Link
-            to={"/field-guide"}
+            to={{
+              pathname: "/field-guide",
+              search: location.search  
+            }}
+            state= {{
+              name: currentPartner.name,
+              icon: currentPartner.squareIcon
+            }}
             className="bg-[#EBEBEB] text-[#333333] rounded-full px-4 flex justify-center items-center gap-2"
           >
             <HiOutlineArrowTopRightOnSquare />
@@ -160,8 +170,11 @@ const HomePage = () => {
         </div>
 
         <Link
-          to={"/leaderboard"}
-          className="bg-[#EBEBEB] text-[#333333] rounded-full mt-4 px-4 flex justify-center items-center gap-2"
+          to={{
+            pathname: "/leaderboard",
+            search: location.search
+          }}
+          className="bg-googleBlue-500 py-2 text-white rounded-full mt-4 px-4 flex justify-center items-center gap-2"
         >
           <HiOutlineArrowTopRightOnSquare />
           Leaderboard

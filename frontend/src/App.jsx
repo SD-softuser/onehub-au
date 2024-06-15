@@ -18,7 +18,7 @@ function App() {
 
   return (
     <>
-      <header className="fixed text-center bg-yellow-500/80 w-full backdrop-blur-xl z-50 py-1">
+      <header className="fixed text-center bg-yellow-500/80 w-full backdrop-blur-xl z-[10000] py-1">
         This is for testing only
       </header>
       <Routes>

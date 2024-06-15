@@ -4,11 +4,12 @@ export const partnersList = [
     code: "ATT%",
     image: "/assets/partners/at&t/at&t.png",
     imageChecked: "/assets/partners/at&t/at&t checked.png",
+    icon: "/assets/att.webp",
+    squareIcon: "/assets/partners/at&t/at&t square.png",
     banners: [
       "/assets/partners/at&t/banners/AT&T-1.png",
       "/assets/partners/at&t/banners/AT&T-2.png",
     ],
-    icon: "/assets/att.webp",
   },
   {
     name: "Verizon",
@@ -27,24 +28,26 @@ export const partnersList = [
     code: "TMO%",
     image: "/assets/partners/t-mobile/T-Mobile.png",
     imageChecked: "/assets/partners/t-mobile/T-Mobile Checked.png",
+    icon: "/assets/tmobile.webp",
+    squareIcon: "/assets/partners/t-mobile/T-Mobile square.png",
     banners: [
       "/assets/partners/t-mobile/banners/T Mobile-1.png",
       "/assets/partners/t-mobile/banners/T Mobile-2.png",
       "/assets/partners/t-mobile/banners/T Mobile-3.png",
     ],
-    icon: "/assets/tmobile.webp",
   },
   {
     name: "Best Buy",
     code: "BBY%",
     image: "/assets/partners/best buy/Best Buy.png",
     imageChecked: "/assets/partners/best buy/Best Buy Checked.png",
+    icon: "/assets/bestbuy.webp",
+    squareIcon: "/assets/partners/best buy/Best Buy Square.png",
     banners: [
       "/assets/partners/verizon/banners/Verizon-1.png",
       "/assets/partners/verizon/banners/Verizon-2.png",
       "/assets/partners/verizon/banners/Verizon-3.png",
     ],
-    icon: "/assets/bestbuy.webp",
   },
 ];
 
@@ -78,12 +81,13 @@ export const CApartnersList = [
     code: "%",
     image: "/assets/partners/roger/RogerButton.png",
     // imageChecked: "/assets/partners/best buy/Best Buy Checked.png",
+    icon: "/assets/partners/roger/rogers.webp",
+    squareIcon: "/assets/partners/roger/Rogers square.png",
     banners: [
       "/assets/partners/roger/Banner1.png",
       "/assets/partners/roger/Banner2.png",
       "/assets/partners/roger/Banner3.png",
     ],
-    icon: "/assets/partners/roger/rogers.webp",
   },
   {
     name: "Bell",
@@ -111,3 +115,70 @@ export const CApartnersList = [
   }
 
 ]
+
+export const tasks = [
+  {
+    type: "single",
+    label: "Check-in to GFA and LILO",
+  },
+  {
+    type: "multiple",
+    label: "Connect with Management",
+    children: [
+      {
+        type: "single",
+        label: "Review sales",
+      },
+      {
+        type: "single",
+        label: "Determine any barriers",
+      },
+      {
+        type: "single",
+        label: "Challenge and set goals",
+      },
+    ],
+  },
+  {
+    type: "multiple",
+    label: "Merchandising:",
+    children: [
+      {
+        type: "single",
+        label: "Ensure demos are working properly",
+      },
+      {
+        type: "single",
+        label: "Submit an L2 form for any display issues. (if applicable)",
+      },
+    ],
+  },
+  {
+    type: "single",
+    label: "Follow the weekly priorities (listed on the following slide) and training materials",
+  },
+  {
+    type: "single",
+    label: "Gather intel around competitive products",
+  },
+  {
+    type: "single",
+    label: "Assist RSAs and customers needs",
+  },
+  {
+    type: "single",
+    label: "Summarize visit with Management",
+  },
+  {
+    type: "single",
+    label: "Complete GFA and any other required surveys",
+  },
+  {
+    type: "single",
+    label: "Log out of LILO",
+  },
+  {
+    type: "single",
+    label: "Make sure all things are completed before heading to the next location",
+  },
+];

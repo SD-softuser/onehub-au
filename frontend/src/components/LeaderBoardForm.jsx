@@ -108,8 +108,9 @@ const LeaderBoardForm = () => {
         dispatch(hideLoader());
       }
     };
-
-    fetchData();
+    if (territory_id && partner.name && partner.code) {
+      fetchData();
+    }
   }, [territory_id, partner, date]);
 
   const filterDataByDate = (data, selectedDate) => {
@@ -434,7 +435,7 @@ const LeaderBoardForm = () => {
                 key={colName}
                 className={`px-4 py-2 border border-gray-300 text-left`}
               >
-                 {colName === "store_name" ? "Store Name" : colName === "city" ? "City" : colName}
+                {colName === "store_name" ? "Store Name" : colName === "city" ? "City" : colName}
               </th>
             ))}
           </tr>
@@ -505,11 +506,11 @@ const LeaderBoardForm = () => {
                 </div>
               ) : (
                 <div className="text-red-500 mt-5">No Partner for this store.</div>
-                
+
               )}
             </tr>
           )}
-          
+
         </tbody>
       </table>
     </div>
