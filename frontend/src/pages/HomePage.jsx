@@ -144,12 +144,12 @@ const HomePage = () => {
         <div className="w-full bg-[#F5F5F5] flex justify-between px-3 py-2 rounded-xl mt-4">
           <div className="flex gap-2">
             <img
-              src="assets/Besy Buy Square.png"
-              alt="Best Buy"
+              src={currentPartner.squareIcon}
+              alt={currentPartner.name}
               className="h-12 w-12"
             />
             <div className="flex flex-col justify-center">
-              <h1 className="font-medium">Best Buy</h1>
+              <h1 className="font-medium">{currentPartner.name}</h1>
               <h6 className="text-xs text-gray-500 -mt-1">Field Sales</h6>
             </div>
           </div>
