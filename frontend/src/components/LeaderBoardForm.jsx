@@ -6,7 +6,7 @@ import { FiEdit3, FiX } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { showLoader, hideLoader } from "../app/slices/loaderSlice";
 import { setCurrentPartnerState } from "../app/slices/currentPartnerSlice";
-import { partnersList, CApartnersList } from "../../constants";
+import { partnersList, CApartnersList } from "../constants";
 
 const PartnerButton = ({ selectedPartner, propPartner }) => {
   const dispatch = useDispatch();
