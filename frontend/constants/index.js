@@ -16,12 +16,13 @@ export const partnersList = [
     code: "VZW%",
     image: "/assets/partners/verizon/Verizon.png",
     imageChecked: "/assets/partners/verizon/Verizon Checked.png",
+    icon: "/assets/verizon.webp",
+    squareIcon: "/assets/verizon.webp",
     banners: [
       "/assets/partners/verizon/banners/Verizon-1.png",
       "/assets/partners/verizon/banners/Verizon-2.png",
       "/assets/partners/verizon/banners/Verizon-3.png",
     ],
-    icon: "/assets/verizon.webp",
   },
   {
     name: "T-Mobile",
@@ -57,24 +58,26 @@ export const CApartnersList = [
     code: "%",
     image: "/assets/partners/bestbuyCA/BestBuyCA.png",
     imageChecked: "/assets/partners/best buy/Best Buy Checked.png",
+    squareIcon: "/assets/bestbuy.webp",
+    icon: "/assets/bestbuy.webp",
     banners: [
       "/assets/partners/bestbuyCA/Banner1.png",
       "/assets/partners/bestbuyCA/Banner2.png",
       "/assets/partners/bestbuyCA/Banner3.png",
     ],
-    icon: "/assets/bestbuy.webp",
   },
   {
     name: "Telus",
     code: "%",
     image: "/assets/partners/telus/TelusButton.png",
     // imageChecked: "/assets/partners/best buy/Best Buy Checked.png",
+    squareIcon: "/assets/partners/telus/telus.webp",
+    icon: "/assets/partners/telus/telus.webp",
     banners: [
       "/assets/partners/telus/Banner1.png",
       "/assets/partners/telus/Banner2.png",
       "/assets/partners/telus/Banner3.png",
     ],
-    icon: "/assets/partners/telus/telus.webp",
   },
   {
     name: "Rogers",
@@ -93,6 +96,8 @@ export const CApartnersList = [
     name: "Bell",
     code: "%",
     image: "/assets/partners/bell/bell icon.png",
+    icon: "/assets/partners/bell/bell.webp",
+    squareIcon: "/assets/partners/bell/bell.webp",
     // imageChecked: "/assets/partners/best buy/Best Buy Checked.png",
     banners: [
       "/assets/partners/bell/Banner1.png",
@@ -104,12 +109,12 @@ export const CApartnersList = [
       "/assets/partners/bell/Banner7.png",
       "/assets/partners/bell/Banner8.png",
     ],
-    icon: "/assets/partners/bell/bell.webp",
   },
   {
     name: "Videotron",
     code: "%",
     icon: "assets/videotron.webp",
+    squareIcon: "assets/videotron.webp",
     banners: [],
     image: "assets/videotron.webp"
   }
