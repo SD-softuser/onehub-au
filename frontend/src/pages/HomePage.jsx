@@ -70,27 +70,7 @@ const HomePage = () => {
       </header> */}
 
       <main className="w-full bg-white rounded-lg px-6 py-10 shadow-md mt-8">
-        <div className="flex justify-center items-center gap-4 px-4 py-1 rounded-full shadow-md">
-          {/* <div>
-            <img
-              src='assets/Best Buy Button.png'
-            />
-          </div>
-          <div>
-            <img
-              src='assets/Bell Button.png'
-            />
-          </div>
-          <div>
-            <img
-              src='assets/Telus Button.png'
-            />
-          </div>
-          <div>
-            <img
-              src='assets/Unnamed Button.png'
-            />
-          </div> */}
+        <div className="flex justify-center items-center gap-4 px-4 py-3 rounded-full shadow-md">
           {country === "CA"
             ? CApartnersList.map((partner, index) => (
                 <div
@@ -99,7 +79,7 @@ const HomePage = () => {
                   key={index}
                 >
                   {currentPartner.name === partner.name ? (
-                    <img className="border-2 border-blue-400 rounded-full" src={partner.image} alt={partner.name} />
+                    <img src={partner.imageChecked} alt={partner.name} />
                   ) : (
                     <img src={partner.image} alt={partner.name} />
                   )}
@@ -112,7 +92,7 @@ const HomePage = () => {
                   key={index}
                 >
                   {currentPartner.name === partner.name ? (
-                    <img className="border-2 border-blue-400 rounded-full" src={partner.image} alt={partner.name} />
+                    <img src={partner.imageChecked} alt={partner.name} />
                   ) : (
                     <img src={partner.image} alt={partner.name} />
                   )}
@@ -144,7 +124,7 @@ const HomePage = () => {
         <div className="w-full bg-[#F5F5F5] flex justify-between px-3 py-2 rounded-xl mt-4">
           <div className="flex gap-2">
             <img
-              src={currentPartner.squareIcon}
+              src={currentPartner.icon}
               alt={currentPartner.name}
               className="h-12 w-12"
             />
@@ -160,7 +140,7 @@ const HomePage = () => {
             }}
             state= {{
               name: currentPartner.name,
-              icon: currentPartner.squareIcon
+              icon: currentPartner.icon
             }}
             className="bg-[#EBEBEB] text-[#333333] rounded-full px-4 flex justify-center items-center gap-2"
           >
