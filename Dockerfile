@@ -1,30 +1,19 @@
-# Use a node base image
-FROM node:14
-
-# Set the working directory to /app
-WORKDIR /app
-
-# Copy package.json and package-lock.json
-COPY package*.json ./
-
-# Install root dependencies (backend dependencies)
+# Stage 1: Build the frontend
+FROM node:16 as build-frontend
+WORKDIR /app/frontend
+COPY frontend/package*.json ./
 RUN npm install
+COPY frontend/ ./
+RUN npm run build
 
-# Copy the frontend and backend directories
-COPY frontend ./frontend
-COPY backend ./backend
+# Stage 2: Set up the backend and root dependencies
+FROM node:16-alpine
+WORKDIR /app
+COPY package*.json ./
+COPY backend/package*.json ./backend/
+RUN npm install
+COPY backend/ ./backend/
+COPY --from=build-frontend /app/frontend/dist ./frontend/dist
 
-# Install frontend dependencies and build the frontend
-RUN npm install --prefix frontend && npm run build --prefix frontend
-
-# Install nodemon globally to run the backend in development mode
-RUN npm install -g nodemon
-
-# Copy the rest of the application code
-COPY . .
-
-# Expose the necessary port
 EXPOSE 5000
-
-# Command to run the backend in development mode using nodemon
-CMD ["nodemon", "backend/index.js"]
+CMD ["npm", "start"]
