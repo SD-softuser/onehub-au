@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { partnersList } from '../../../constants';
+import { partnersList } from '../../constants';
 
 const initialState = {
     currentPartner: partnersList[0],
