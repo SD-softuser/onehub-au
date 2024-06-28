@@ -5,8 +5,6 @@ import { HiOutlineArrowTopRightOnSquare } from "react-icons/hi2";
 import { Link } from "react-router-dom";
 import useQuery from "../utils/useQuery";
 import LeaderBoardForm from "../components/LeaderBoardForm";
-import { partnersList, CApartnersList } from "../constants";
-import { setCurrentPartnerState } from "../app/slices/currentPartnerSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCountry } from "../app/slices/countrySlice";
 import { fetchPartners } from "../app/slices/partnersSlice";

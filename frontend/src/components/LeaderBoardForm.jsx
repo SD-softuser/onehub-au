@@ -5,10 +5,9 @@ import useQuery from "../utils/useQuery";
 import { FiEdit3, FiX } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { showLoader, hideLoader } from "../app/slices/loaderSlice";
-import { setCurrentPartnerState } from "../app/slices/currentPartnerSlice";
-import { partnersList, CApartnersList } from "../constants";
 import { setSelectedPartner } from "../app/slices/partnerDetailsSlice";
 import TableSkeleton from "./TableSkeleton";
+import toast from "react-hot-toast";
 
 const getCode = (selectedPartner) => {
   if(selectedPartner == "at&t")
@@ -23,44 +22,14 @@ const getCode = (selectedPartner) => {
     return "%"
 }
 
-const PartnerButton = ({ selectedPartner, propPartner }) => {
-  const dispatch = useDispatch();
-
-  return (
-    <button
-      className={`flex flex-row gap-3 justify-center items-center px-4 py-2 border-[1px] rounded-xl ${selectedPartner === propPartner.name
-        ? "border-googleBlue-500 text-googleBlue-500"
-        : ""
-        }`}
-      onClick={() => dispatch(setCurrentPartnerState(propPartner))}
-    >
-      <img
-        src={propPartner.icon}
-        alt={`${propPartner.name}`}
-        className="h-6 w-7"
-      />
-      <h6>{propPartner.name}</h6>
-    </button>
-  );
-};
-
 const LeaderBoardForm = () => {
   const query = useQuery();
   const territory_id = query.get("territory_id");
-  // const [partner, setPartner] = useState("AT&T");
-  // const [country, setCountry] = useState("CA");
 
   const country = useSelector((state) => state.country.country);
   const partners = useSelector((state) => state.partners.partners);
   const partnerDetails = useSelector((state) => state.partnerDetails.details);
   const selectedPartner = useSelector((state) => state.partnerDetails.selectedPartner);
-
-  console.log(country, partners, partnerDetails, selectedPartner);
-
-  const currentPartnerUS = useSelector((state) => state.partner.currentPartner);
-  const currentPartnerCA = useSelector((state) => state.partnerCA.currentPartner);
-  const partner = useSelector((state) => state.currentPartner);
-  // console.log(partner);
 
   const convertDate = (date) => {
     const d = new Date(date);
@@ -172,27 +141,6 @@ const LeaderBoardForm = () => {
     return `${year}-${month}-${day}`;
   };
 
-  // useEffect(() => {
-  //   const fetch = async () => {
-  //     const encodedTerritory = encodeURIComponent(territory_id);
-  //     const response = await axios.get(
-  //       `/api/fetchCountry?territory_id=${encodedTerritory}`
-  //     );
-  //     const data = response.data;
-  //     setCountry(data[0].country);
-  //   };
-  //   fetch();
-  // }, [territory_id]);
-
-  // useEffect(() => {
-  //   if (country === "US") {
-  //     dispatch(setCurrentPartnerState(currentPartnerUS));
-  //   } else {
-  //     dispatch(setCurrentPartnerState(currentPartnerCA));
-  //     // console.log("set CA");
-  //   }
-  // }, [country]);
-
   const handleEditClick = () => {
     if (isEdit) {
       saveChanges();
@@ -239,6 +187,7 @@ const LeaderBoardForm = () => {
         }
       }
       setChangedInputs({});
+      toast.success('Changes Saved Successfully!')
     } catch (err) {
       console.error("Error saving data:", err);
     } finally {
@@ -257,7 +206,7 @@ const LeaderBoardForm = () => {
             const obj = {
               date: date,
               country: country,
-              partner: partner.name,
+              partner: selectedPartner,
               territory_id: territory_id,
               sales: tableRow[newKey] || '0',
               city: tableRow.city,
@@ -271,65 +220,8 @@ const LeaderBoardForm = () => {
       });
 
       await Promise.all(promises);
+      toast.success('Added Successfully!')
       console.log("All requests completed");
-
-      // for (const newKey in tableRow) {
-      //   if (newKey === "Pixel 8a" || newKey === "Pixel 8" || newKey === "Pixel 8 Pro" || newKey === "Pixel Watch") {
-      //     // console.log(newKey);
-      //     const obj = {
-      //       date: date,
-      //       country: country,
-      //       partner: partner.name,
-      //       territory_id: territory_id,
-      //       sales: parseInt(tableRow[newKey]),
-      //       city: tableRow.city,
-      //       store_name: tableRow.store_name,
-      //       productModel: newKey
-      //     }
-      //     console.log(obj);
-      //     await axios.post("/api/createEntry", obj);
-      //   }
-      // }
-
-      // const { rowIndex, colName, value } = tableData[key];
-
-      // const row = tableData[rowIndex];
-      // console.log(row);
-      // await axios.post("/api/createEntry", {
-      //   date: date,
-      //   country: country,
-      //   partner: partner.name,
-      //   territory_id: territory_id,
-      //   sales: parseInt(value),
-      //   city: row.city,
-      //   store_name: row.store_name,
-      //   productModel: colName
-
-      // });
-
-      // const existingStoreNames = new Set(tableData.map(row => row.store_name));
-      // // console.log(existingStoreNames)
-      // for (const row of template) {
-      //   if (!existingStoreNames.has(row.store_name)) {
-      //     // Create default row with zero values
-      //     const defaultRow = {};
-      //     columns.forEach(colName => {
-      //       defaultRow[colName] = colName === "store_name" || colName === "city" ? row[colName] : "0";
-      //     });
-
-      //     // Add row with zero values
-      //     await axios.post("/api/createEntry", {
-      //       date: date,
-      //       country: country,
-      //       partner: partner.name,
-      //       territory_id: territory_id,
-      //       city: row.city,
-      //       store_name: row.store_name,
-      //       ...defaultRow
-      //     });
-      //   }
-      // }
-      // setChangedInputs({});
     } catch (err) {
       console.error("Error saving data:", err);
     } finally {
@@ -337,32 +229,17 @@ const LeaderBoardForm = () => {
     }
   }
 
-  const createDefaultRow = () => {
-    const defaultRow = {};
-    // console.log(columns);
-    columns.forEach((colName) => {
-      defaultRow[colName] =
-        colName === "store_name" || colName === "city" ? "" : "0";
-    });
-    // console.log(defaultRow);
-    return defaultRow;
-  };
   const handleAdd = (rowIndex, colName, value) => {
     const updatedTableData = [...tableData];
     updatedTableData[rowIndex][colName] = value;
     setTableData(updatedTableData);
-
-    // const key = `${rowIndex}-${colName}`;
-    // setChangedInputs((prev) => ({
-    //   ...prev,
-    //   [key]: { rowIndex, colName, value },
-    // }));
   }
   const handleAddClick = () => {
     if (isAdd) {
       addChanges()
     }
     setIsAdd(!isAdd);
+    setIsEdit(false);
   }
   
   const handlePartnerSelect = (partner) => {

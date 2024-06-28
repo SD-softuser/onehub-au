@@ -1,8 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
 import loaderReducer from './slices/loaderSlice'
-import partnerReducer from "./slices/partnerSlice"
-import partnerCAReducer from "./slices/partnerCASlice"
-import currentPartnerReducer from "./slices/currentPartnerSlice"
 import countryReducer from './slices/countrySlice'
 import partnersReducer from './slices/partnersSlice'
 import partnersDetailsReducer from './slices/partnerDetailsSlice'
@@ -15,8 +12,5 @@ export default configureStore({
     partners: partnersReducer,
     partnerDetails: partnersDetailsReducer,
     banners: bannersReducer,
-    partner: partnerReducer,
-    partnerCA: partnerCAReducer,
-    currentPartner: currentPartnerReducer
   },
 })

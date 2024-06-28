@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import FieldGuide from "./pages/FieldGuide";
 import LeaderBoard from "./pages/Leaderboard";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   // useEffect(() => {
@@ -17,16 +18,22 @@ function App() {
   // }, []);
 
   return (
-    <>
-      <header className="fixed text-center bg-yellow-500/80 w-full backdrop-blur-xl z-[10000] py-1">
+    <div>
+      <nav className="fixed text-center bg-yellow-500/80 w-full backdrop-blur-xl z-[10000] py-1">
         This is for testing only
-      </header>
+      </nav>
+      <div>
+        <Toaster
+          position="top-center"
+          reverseOrder={false}
+        />
+      </div>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/field-guide" element={<FieldGuide />} />
         <Route path="/leaderboard" element={<LeaderBoard />} />
       </Routes>
-    </>
+    </div>
   );
 }
 
