@@ -20,19 +20,17 @@ const HomePage = () => {
   const territory_id = query.get("territory_id");
 
   const dispatch = useDispatch();
-  // const currentPartnerUS = useSelector((state) => state.partner.currentPartner);
-  // const currentPartnerCA = useSelector((state) => state.partnerCA.currentPartner);
   const currentPartner = useSelector((state) => state.currentPartner);
-
   const country = useSelector((state) => state.country.country);
   const partners = useSelector((state) => state.partners.partners);
   const partnerDetails = useSelector((state) => state.partnerDetails.details);
   const selectedPartner = useSelector((state) => state.partnerDetails.selectedPartner);
   const banners = useSelector((state) => state.banners.banners);
-  console.log(partnerDetails);
 
-  const status = useSelector((state) => state.country.status);
-  const error = useSelector((state) => state.country.error);
+  const countryStatus = useSelector((state) => state.country.status);
+  const partnersStatus = useSelector((state) => state.partners.status);
+  const partnerDetailsStatus = useSelector((state) => state.partnerDetails.status);
+  const bannersStatus = useSelector((state) => state.banners.status);
 
   useEffect(() => {
     if (territory_id) {
@@ -52,9 +50,10 @@ const HomePage = () => {
         dispatch(fetchPartnerDetails({ country, partner }));
       });
     }
-    dispatch(setSelectedPartner(partners[0]))
+    if (partners.length > 0) {
+      dispatch(setSelectedPartner(partners[0]));
+    }
   }, [country, partners, dispatch]);
-
 
   useEffect(() => {
     if (selectedPartner) {
@@ -66,7 +65,7 @@ const HomePage = () => {
     dispatch(setSelectedPartner(partner));
   };
 
-  if (status === 'loading') {
+  if (countryStatus === 'loading' || partnersStatus === 'loading' || partnerDetailsStatus === 'loading') {
     return (
       <MaxWidthWrapper className="flex flex-col gap-6">
         <SkeletonLoader />
@@ -91,22 +90,36 @@ const HomePage = () => {
           ))}
         </div>
 
-        <div className={`relative grid grid-cols-2 mt-4 gap-4 ${opened || (banners && banners.length <= 2) ? "h-full" : "h-60 overflow-hidden"}`}>
-          {banners && banners.map((banner, index) => (
-            <img src={banner} key={index} alt={`Banner ${index}`} />
-          ))}
-          {!opened && (
-            <div className="absolute h-full w-full bg-gradient-to-t from-white to-transparent to-40%"></div>
-          )}
-        </div>
+        {bannersStatus === 'loading' ? (
+          <div className="animate-pulse relative grid grid-cols-2 mt-4 gap-4 h-full w-full overflow-hidden">
+            <div className="w-full h-52 bg-gradient-to-b from-gray-200 to-transparent rounded-md"></div>
+            <div className="w-full h-52 bg-gradient-to-b from-gray-200 to-transparent rounded-md"></div>
+            <button
+              className="mx-auto bg-googleBlue-100 text-googleBlue-500 px-6 py-1.5 rounded-full font-medium flex justify-center items-center text-sm gap-2 my-2 col-span-2"
+            >
+              <div className="w-24 h-8 bg-gray-200 rounded-full"></div>
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className={`relative grid grid-cols-2 mt-4 gap-4 ${opened || (banners && banners.length <= 2) ? "h-full" : "h-60 overflow-hidden"}`}>
+              {banners && banners.map((banner, index) => (
+                <img src={banner} key={index} alt={`Banner ${index}`} />
+              ))}
+              {!opened && (
+                <div className="absolute h-full w-full bg-gradient-to-t from-white to-transparent to-40%"></div>
+              )}
+            </div>
 
-        <button
-          className="mx-auto bg bg-googleBlue-100 text-googleBlue-500 px-6 py-1.5 rounded-full font-medium flex justify-center items-center text-sm gap-2 my-2"
-          onClick={() => setOpened(!opened)}
-        >
-          <h2>{opened ? "Collapse" : "View All"}</h2>
-          {opened ? <FaChevronUp /> : <FaChevronDown />}
-        </button>
+            <button
+              className="mx-auto bg bg-googleBlue-100 text-googleBlue-500 px-6 py-1.5 rounded-full font-medium flex justify-center items-center text-sm gap-2 my-2"
+              onClick={() => setOpened(!opened)}
+            >
+              <h2>{opened ? "Collapse" : "View All"}</h2>
+              {opened ? <FaChevronUp /> : <FaChevronDown />}
+            </button>
+          </>
+        )}
 
         {partnerDetails && selectedPartner && (
           <div className="w-full bg-[#F5F5F5] flex justify-between px-3 py-2 rounded-xl mt-4">

@@ -7,9 +7,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { showLoader, hideLoader } from "../app/slices/loaderSlice";
 import { setCurrentPartnerState } from "../app/slices/currentPartnerSlice";
 import { partnersList, CApartnersList } from "../constants";
+import { setSelectedPartner } from "../app/slices/partnerDetailsSlice";
+
+const getCode = (selectedPartner) => {
+  if(selectedPartner == "at&t")
+    return "ATT%"
+  else if (selectedPartner == "verizon")
+    return "VZW%"
+  else if (selectedPartner == "t-mobile")
+    return "TMO%"
+  else if (selectedPartner == "best buy")
+    return "BBY%"
+  else
+    return "%"
+}
 
 const PartnerButton = ({ selectedPartner, propPartner }) => {
   const dispatch = useDispatch();
+
   return (
     <button
       className={`flex flex-row gap-3 justify-center items-center px-4 py-2 border-[1px] rounded-xl ${selectedPartner === propPartner.name
@@ -32,12 +47,20 @@ const LeaderBoardForm = () => {
   const query = useQuery();
   const territory_id = query.get("territory_id");
   // const [partner, setPartner] = useState("AT&T");
-  const [country, setCountry] = useState("CA");
+  // const [country, setCountry] = useState("CA");
+
+  const country = useSelector((state) => state.country.country);
+  const partners = useSelector((state) => state.partners.partners);
+  const partnerDetails = useSelector((state) => state.partnerDetails.details);
+  const selectedPartner = useSelector((state) => state.partnerDetails.selectedPartner);
+
+  console.log(country, partners, partnerDetails, selectedPartner);
+
   const currentPartnerUS = useSelector((state) => state.partner.currentPartner);
-  const currentPartnerCA = useSelector(
-    (state) => state.partnerCA.currentPartner
-  );
+  const currentPartnerCA = useSelector((state) => state.partnerCA.currentPartner);
   const partner = useSelector((state) => state.currentPartner);
+  // console.log(partner);
+
   const convertDate = (date) => {
     const d = new Date(date);
     const year = d.getFullYear();
@@ -45,6 +68,7 @@ const LeaderBoardForm = () => {
     const day = String(d.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
+
   const [date, setDate] = useState(convertDate(Date.now()));
   const [tableData, setTableData] = useState([]);
   console.log(tableData);
@@ -92,12 +116,12 @@ const LeaderBoardForm = () => {
         dispatch(showLoader());
         setTableData([]);
         const encodedTerritory = encodeURIComponent(territory_id);
-        const encodedPartner = encodeURIComponent(partner.name);
-        const encodedCode = encodeURIComponent(partner.code)
+        const encodedPartner = encodeURIComponent(selectedPartner);
+        const encodedCode = encodeURIComponent(getCode(selectedPartner))
         const response = await axios.get(
           `/api/fetchProductSales?territory_id=${encodedTerritory}&partner=${encodedPartner}&code=${encodedCode}`
         );
-        // console.log(response.data);
+        console.log("Data is : ", response.data);
         setAllData(response.data);
         setTemplate(response.data);
         filterDataByDate(response.data, date);
@@ -108,10 +132,10 @@ const LeaderBoardForm = () => {
         dispatch(hideLoader());
       }
     };
-    if (territory_id && partner.name && partner.code) {
+    if (territory_id && selectedPartner) {
       fetchData();
     }
-  }, [territory_id, partner, date]);
+  }, [territory_id, selectedPartner, date]);
 
   const filterDataByDate = (data, selectedDate) => {
     // console.log(selectedDate);
@@ -147,26 +171,26 @@ const LeaderBoardForm = () => {
     return `${year}-${month}-${day}`;
   };
 
-  useEffect(() => {
-    const fetch = async () => {
-      const encodedTerritory = encodeURIComponent(territory_id);
-      const response = await axios.get(
-        `/api/fetchCountry?territory_id=${encodedTerritory}`
-      );
-      const data = response.data;
-      setCountry(data[0].country);
-    };
-    fetch();
-  }, [territory_id]);
+  // useEffect(() => {
+  //   const fetch = async () => {
+  //     const encodedTerritory = encodeURIComponent(territory_id);
+  //     const response = await axios.get(
+  //       `/api/fetchCountry?territory_id=${encodedTerritory}`
+  //     );
+  //     const data = response.data;
+  //     setCountry(data[0].country);
+  //   };
+  //   fetch();
+  // }, [territory_id]);
 
-  useEffect(() => {
-    if (country === "US") {
-      dispatch(setCurrentPartnerState(currentPartnerUS));
-    } else {
-      dispatch(setCurrentPartnerState(currentPartnerCA));
-      // console.log("set CA");
-    }
-  }, [country]);
+  // useEffect(() => {
+  //   if (country === "US") {
+  //     dispatch(setCurrentPartnerState(currentPartnerUS));
+  //   } else {
+  //     dispatch(setCurrentPartnerState(currentPartnerCA));
+  //     // console.log("set CA");
+  //   }
+  // }, [country]);
 
   const handleEditClick = () => {
     if (isEdit) {
@@ -349,19 +373,33 @@ const LeaderBoardForm = () => {
   }
   const filteredColumns = columns.filter(colName => colName !== "date" && colName !== "country");
 
+  const handlePartnerSelect = (partner) => {
+    dispatch(setSelectedPartner(partner));
+  };
+
   return (
     <div className="bg-white w-full px-4 py-4 rounded-xl shadow-md">
       {/* Partners */}
       <div className="flex gap-3">
-        {(country === "CA" ? CApartnersList : partnersList).map(
-          (partnerName) => (
-            <PartnerButton
-              key={partnerName.name}
-              selectedPartner={partner.name}
-              propPartner={partnerName}
-            />
-          )
-        )}
+        {partners.map((partner, index) => (
+          <button
+            className={`flex flex-row gap-3 justify-center items-center px-4 py-2 border-[1px] rounded-xl ${selectedPartner === partner
+              ? "border-googleBlue-500 text-googleBlue-500"
+              : ""
+              }`}
+            onClick={() => handlePartnerSelect(partner)}
+            key={index}
+          >
+            {partnerDetails[partner] && (
+              <img
+                src={partnerDetails[partner].square}
+                alt={selectedPartner}
+                className="h-6 w-7"
+              />
+            )}
+            <h6>{partner}</h6>
+          </button>
+        ))}
       </div>
 
       {/* Calendar */}
