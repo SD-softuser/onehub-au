@@ -3,12 +3,20 @@ import loaderReducer from './slices/loaderSlice'
 import partnerReducer from "./slices/partnerSlice"
 import partnerCAReducer from "./slices/partnerCASlice"
 import currentPartnerReducer from "./slices/currentPartnerSlice"
+import countryReducer from './slices/countrySlice'
+import partnersReducer from './slices/partnersSlice'
+import partnersDetailsReducer from './slices/partnerDetailsSlice'
+import bannersReducer from './slices/bannersSlice'
 
 export default configureStore({
   reducer: {
     loader: loaderReducer,
-    partner:partnerReducer,
-    partnerCA:partnerCAReducer,
-    currentPartner:currentPartnerReducer
+    country: countryReducer,
+    partners: partnersReducer,
+    partnerDetails: partnersDetailsReducer,
+    banners: bannersReducer,
+    partner: partnerReducer,
+    partnerCA: partnerCAReducer,
+    currentPartner: currentPartnerReducer
   },
 })

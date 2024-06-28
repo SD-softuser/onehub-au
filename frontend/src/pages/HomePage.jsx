@@ -5,108 +5,95 @@ import { HiOutlineArrowTopRightOnSquare } from "react-icons/hi2";
 import { Link } from "react-router-dom";
 import useQuery from "../utils/useQuery";
 import LeaderBoardForm from "../components/LeaderBoardForm";
-import axios from "axios";
 import { partnersList, CApartnersList } from "../constants";
 import { setCurrentPartnerState } from "../app/slices/currentPartnerSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { fetchCountry } from "../app/slices/countrySlice";
+import { fetchPartners } from "../app/slices/partnersSlice";
+import { fetchPartnerDetails, setSelectedPartner } from "../app/slices/partnerDetailsSlice";
+import { fetchBanners } from "../app/slices/bannersSlice";
+import SkeletonLoader from "../components/SkeletonLoader";
 
 const HomePage = () => {
   const [opened, setOpened] = useState(false);
-  const [country, setCountry] = useState("CA");
-
   const query = useQuery();
   const territory_id = query.get("territory_id");
-  
+
   const dispatch = useDispatch();
-  const currentPartnerUS = useSelector((state) => state.partner.currentPartner);
-  const currentPartnerCA = useSelector((state) => state.partnerCA.currentPartner);
+  // const currentPartnerUS = useSelector((state) => state.partner.currentPartner);
+  // const currentPartnerCA = useSelector((state) => state.partnerCA.currentPartner);
   const currentPartner = useSelector((state) => state.currentPartner);
 
-  console.log(currentPartner)
-  
-  const partnerState = (partner) => {
-    if (country === "US") {
-      dispatch(setCurrentPartnerState(partner))
-    } else {
-      dispatch(setCurrentPartnerState(partner))
+  const country = useSelector((state) => state.country.country);
+  const partners = useSelector((state) => state.partners.partners);
+  const partnerDetails = useSelector((state) => state.partnerDetails.details);
+  const selectedPartner = useSelector((state) => state.partnerDetails.selectedPartner);
+  const banners = useSelector((state) => state.banners.banners);
+  console.log(partnerDetails);
+
+  const status = useSelector((state) => state.country.status);
+  const error = useSelector((state) => state.country.error);
+
+  useEffect(() => {
+    if (territory_id) {
+      dispatch(fetchCountry(territory_id));
     }
+  }, [territory_id, dispatch]);
+
+  useEffect(() => {
+    if (country) {
+      dispatch(fetchPartners(country));
+    }
+  }, [country, dispatch]);
+
+  useEffect(() => {
+    if (country && partners.length > 0) {
+      partners.forEach(partner => {
+        dispatch(fetchPartnerDetails({ country, partner }));
+      });
+    }
+    dispatch(setSelectedPartner(partners[0]))
+  }, [country, partners, dispatch]);
+
+
+  useEffect(() => {
+    if (selectedPartner) {
+      dispatch(fetchBanners({ country, partner: selectedPartner }));
+    }
+  }, [selectedPartner, country, dispatch]);
+
+  const handlePartnerSelect = (partner) => {
+    dispatch(setSelectedPartner(partner));
   };
 
-  // useEffect(() => {
-  //   const fetch = async () => {
-  //     const response = await axios.get('/api/testing')
-  //     const data = response.data
-  //     console.log(data)
-  //   }
-  //   fetch()
-  // })
-
-  useEffect(() => {
-    const fetch = async () => {
-      const encodedTerritory = encodeURIComponent(territory_id);
-      const response = await axios.get(
-        `/api/fetchCountry?territory_id=${encodedTerritory}`
-      );
-      const data = response.data;
-      setCountry(data[0].country);
-    };
-    fetch();
-  }, [territory_id]);
-
-  useEffect(() => {
-    if (country === "US") {
-      dispatch(setCurrentPartnerState(currentPartnerUS));
-    } else {
-      dispatch(setCurrentPartnerState(currentPartnerCA));
-      console.log("set CA");
-    }
-  }, [country]);
+  if (status === 'loading') {
+    return (
+      <MaxWidthWrapper className="flex flex-col gap-6">
+        <SkeletonLoader />
+      </MaxWidthWrapper>
+    );
+  }
 
   return (
     <MaxWidthWrapper className="flex flex-col gap-6">
-      {/* <header className="w-full flex justify-center items-center py-2.5 gap-2">
-        <img src="/Google Logo.png" alt="Google" className="h-10 w-10" />
-        <h1 className="font-bold text-3xl">Store Hub</h1>
-      </header> */}
-
       <main className="w-full bg-white rounded-lg px-6 py-10 shadow-md mt-8">
         <div className="flex justify-center items-center gap-4 px-4 py-3 rounded-full shadow-md">
-          {country === "CA"
-            ? CApartnersList.map((partner, index) => (
-                <div
-                  className="cursor-pointer"
-                  onClick={() => partnerState(partner)}
-                  key={index}
-                >
-                  {currentPartner.name === partner.name ? (
-                    <img src={partner.imageChecked} alt={partner.name} />
-                  ) : (
-                    <img src={partner.image} alt={partner.name} />
-                  )}
-                </div>
-              ))
-            : partnersList.map((partner, index) => (
-                <div
-                  className="cursor-pointer"
-                  onClick={() => partnerState(partner)}
-                  key={index}
-                >
-                  {currentPartner.name === partner.name ? (
-                    <img src={partner.imageChecked} alt={partner.name} />
-                  ) : (
-                    <img src={partner.image} alt={partner.name} />
-                  )}
-                </div>
-              ))}
+          {partners && partnerDetails && partners.map((partner, index) => (
+            <div
+              className="cursor-pointer"
+              onClick={() => handlePartnerSelect(partner)}
+              key={index}
+            >
+              {partnerDetails[partner] && (
+                <img src={selectedPartner === partner ? partnerDetails[partner].checked : partnerDetails[partner].unchecked} alt={partner} />
+              )}
+            </div>
+          ))}
         </div>
 
-        <div
-          className={`relative grid grid-cols-2 mt-4 gap-4 ${
-            opened || currentPartner.banners.length <= 2 ? "h-full" : "h-60 overflow-hidden"
-          }`}
-        >
-          {currentPartner.banners.map((banner, index) => (
-            <img src={banner} key={index} />
+        <div className={`relative grid grid-cols-2 mt-4 gap-4 ${opened || (banners && banners.length <= 2) ? "h-full" : "h-60 overflow-hidden"}`}>
+          {banners && banners.map((banner, index) => (
+            <img src={banner} key={index} alt={`Banner ${index}`} />
           ))}
           {!opened && (
             <div className="absolute h-full w-full bg-gradient-to-t from-white to-transparent to-40%"></div>
@@ -121,33 +108,35 @@ const HomePage = () => {
           {opened ? <FaChevronUp /> : <FaChevronDown />}
         </button>
 
-        <div className="w-full bg-[#F5F5F5] flex justify-between px-3 py-2 rounded-xl mt-4">
-          <div className="flex gap-2">
-            <img
-              src={currentPartner.icon}
-              alt={currentPartner.name}
-              className="h-12 w-12"
-            />
-            <div className="flex flex-col justify-center">
-              <h1 className="font-medium">{currentPartner.name}</h1>
-              <h6 className="text-xs text-gray-500 -mt-1">Field Sales</h6>
+        {partnerDetails && selectedPartner && (
+          <div className="w-full bg-[#F5F5F5] flex justify-between px-3 py-2 rounded-xl mt-4">
+            <div className="flex gap-2">
+              <img
+                src={partnerDetails[selectedPartner]?.square}
+                alt={selectedPartner}
+                className="h-12 w-12"
+              />
+              <div className="flex flex-col justify-center">
+                <h1 className="font-medium">{selectedPartner}</h1>
+                <h6 className="text-xs text-gray-500 -mt-1">Field Sales</h6>
+              </div>
             </div>
+            <Link
+              to={{
+                pathname: "/field-guide",
+                search: location.search
+              }}
+              state={{
+                name: selectedPartner,
+                icon: partnerDetails[selectedPartner]?.square
+              }}
+              className="bg-[#EBEBEB] text-[#333333] rounded-full px-4 flex justify-center items-center gap-2"
+            >
+              <HiOutlineArrowTopRightOnSquare />
+              Check Field Guide
+            </Link>
           </div>
-          <Link
-            to={{
-              pathname: "/field-guide",
-              search: location.search  
-            }}
-            state= {{
-              name: currentPartner.name,
-              icon: currentPartner.icon
-            }}
-            className="bg-[#EBEBEB] text-[#333333] rounded-full px-4 flex justify-center items-center gap-2"
-          >
-            <HiOutlineArrowTopRightOnSquare />
-            Check Field Guide
-          </Link>
-        </div>
+        )}
 
         <Link
           to={{

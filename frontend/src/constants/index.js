@@ -152,10 +152,6 @@ export const tasks = [
         type: "single",
         label: "Ensure demos are working properly",
       },
-      {
-        type: "single",
-        label: "Submit an L2 form for any display issues. (if applicable)",
-      },
     ],
   },
   {
@@ -177,10 +173,6 @@ export const tasks = [
   {
     type: "single",
     label: "Complete GFA and any other required surveys",
-  },
-  {
-    type: "single",
-    label: "Log out of LILO",
   },
   {
     type: "single",
