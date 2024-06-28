@@ -8,6 +8,7 @@ import { showLoader, hideLoader } from "../app/slices/loaderSlice";
 import { setCurrentPartnerState } from "../app/slices/currentPartnerSlice";
 import { partnersList, CApartnersList } from "../constants";
 import { setSelectedPartner } from "../app/slices/partnerDetailsSlice";
+import TableSkeleton from "./TableSkeleton";
 
 const getCode = (selectedPartner) => {
   if(selectedPartner == "at&t")
@@ -363,19 +364,14 @@ const LeaderBoardForm = () => {
     }
     setIsAdd(!isAdd);
   }
-
-  if (isLoading) {
-    return (
-      <div>
-        <h1>Loading...</h1>
-      </div>
-    );
-  }
-  const filteredColumns = columns.filter(colName => colName !== "date" && colName !== "country");
-
+  
   const handlePartnerSelect = (partner) => {
     dispatch(setSelectedPartner(partner));
   };
+ 
+  if (isLoading) {
+    return <TableSkeleton />
+  }
 
   return (
     <div className="bg-white w-full px-4 py-4 rounded-xl shadow-md">

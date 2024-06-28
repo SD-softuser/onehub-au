@@ -11,7 +11,7 @@ import TrophyDisplay from "../components/TrophyDisplay";
 import { useDispatch, useSelector } from "react-redux";
 import { hideLoader, showLoader } from "../app/slices/loaderSlice";
 import SvgComponent from "../components/SvgComponent";
-
+import TableSkeleton from "../components/TableSkeleton";
 
 const LeaderBoard = () => {
   const dispatch = useDispatch()
@@ -189,9 +189,7 @@ const LeaderBoard = () => {
       </div>
 
       {isLoading ? (
-        <div>
-          <h1>Loading...</h1>
-        </div>
+        <TableSkeleton />
       ) : (
         <>
           {(tableData && dataRanking) && <TrophyDisplay data={dataRanking} />}

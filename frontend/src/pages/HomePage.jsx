@@ -20,7 +20,6 @@ const HomePage = () => {
   const territory_id = query.get("territory_id");
 
   const dispatch = useDispatch();
-  const currentPartner = useSelector((state) => state.currentPartner);
   const country = useSelector((state) => state.country.country);
   const partners = useSelector((state) => state.partners.partners);
   const partnerDetails = useSelector((state) => state.partnerDetails.details);
@@ -74,8 +73,8 @@ const HomePage = () => {
   }
 
   return (
-    <MaxWidthWrapper className="flex flex-col gap-6">
-      <main className="w-full bg-white rounded-lg px-6 py-10 shadow-md mt-8">
+    <MaxWidthWrapper className="flex flex-col gap-6 py-10">
+      <main className="w-full bg-white rounded-lg px-6 py-10 shadow-md">
         <div className="flex justify-center items-center gap-4 px-4 py-3 rounded-full shadow-md">
           {partners && partnerDetails && partners.map((partner, index) => (
             <div
