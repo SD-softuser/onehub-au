@@ -83,10 +83,10 @@ const Weekly = () => {
               
               {name === "AT&T" && index == 2 && (
                 <div className='bg-black/0 absolute top-[50%] left-[20%] flex gap-2 right-[8%]'>
-                  <a href="https://docs.google.com/presentation/d/1ozAqB0m_MyqyG1LwVb7oBzAyPhu5qLUgQ9WKVWHZFNg/edit#slide=id.g2cae7cf6e6d_1_12" className='relative w-full h-10 bg-black/0' target='_blank'></a>
-                  <a href="https://docs.google.com/presentation/d/1o8L1KoT869XOBpDjf1heziup3jcgHcUwbBF1pnGwfKM/edit#slide=id.g2cae7cf6e6d_1_0" className='relative w-full h-10 bg-black/0' target='_blank'></a>
-                  <a href="https://docs.google.com/presentation/d/1FlE3Erf8F52t7jhPY0g_4wYji1tE-YzW4DMPs5mPnTE/edit#slide=id.g2cae7cf6e6d_1_24" className='relative w-full h-10 bg-black/0' target='_blank'></a>
                   <a href="https://docs.google.com/presentation/d/1uus22kWoKBWo9b3drQQFNUrJbjsAt7dspesttCa40Bg/edit" className='relative w-full h-10 bg-black/0' target='_blank'></a>
+                  <a href="https://docs.google.com/presentation/d/1FlE3Erf8F52t7jhPY0g_4wYji1tE-YzW4DMPs5mPnTE/edit#slide=id.g2cae7cf6e6d_1_24" className='relative w-full h-10 bg-black/0' target='_blank'></a>
+                  <a href="https://docs.google.com/presentation/d/1o8L1KoT869XOBpDjf1heziup3jcgHcUwbBF1pnGwfKM/edit#slide=id.g2cae7cf6e6d_1_0" className='relative w-full h-10 bg-black/0' target='_blank'></a>
+                  <a href="https://docs.google.com/presentation/d/1ozAqB0m_MyqyG1LwVb7oBzAyPhu5qLUgQ9WKVWHZFNg/edit#slide=id.g2cae7cf6e6d_1_12" className='relative w-full h-10 bg-black/0' target='_blank'></a>
                 </div>
               )}
             </div>
