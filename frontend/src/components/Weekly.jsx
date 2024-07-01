@@ -1,6 +1,46 @@
-import React from 'react'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { fetchCountry } from '../app/slices/countrySlice';
+import useQuery from '../utils/useQuery';
 
 const Weekly = () => {
+
+  const query = useQuery();
+  const territory_id = query.get("territory_id");
+
+  const location = useLocation()
+  const country = useSelector((state) => state.country.country)
+  console.log(country);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (territory_id) {
+      dispatch(fetchCountry(territory_id));
+    }
+  }, [territory_id, dispatch]);
+  // const store = 
+  const { name } = location.state;
+
+  const [imageUrls, setImageUrls] = useState([])
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const response = await axios.get(`https://storehub-image.testexperience.site/next_level/storehub-company/${country}/${name}/Weekly`);
+        const data = response.data.images;
+        console.log("Data is : ", data);
+        setImageUrls(data);
+      } catch (error) {
+        console.error("Error fetching images: ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchImages()
+  }, [name, country])
+
   return (
     <main className='bg-white w-full rounded-2xl shadow-lg'>
       <h1 className='font-semibold text-center text-4xl my-4'>
@@ -16,7 +56,47 @@ const Weekly = () => {
 
       <div className='bg-[#F6F7FA] w-full h-[2px]' />
 
-      <div className='flex flex-col gap-4 pl-4 pr-6 pb-8 mt-4'>
+      {loading ? (
+        <div className="flex flex-col gap-4 pl-4 pr-6 pb-8 mt-4">
+          {[...Array(3)].map((_, index) => (
+            <div key={index} className="flex gap-4 animate-pulse">
+              <div className="relative w-16 h-16 bg-gray-300 rounded"></div>
+              <div className="flex-1 flex flex-col gap-4">
+                <div className="w-full h-32 bg-gray-300 rounded"></div>
+                <div className="w-full h-6 bg-gray-300 rounded"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className='flex flex-col gap-4 pl-4 pr-6 pb-8 mt-4'>
+          {imageUrls.map((url, index) => (
+            <div className='relative' key={index}>
+              <img src={url} alt={`Weekly priority ${index}`} key={index} className={`relative ${(country === "CA" && (name === "Rogers" || name === "Bell" || name === "Telus") && index == 1) && 'cursor-pointer'}`} onClick={() => {
+                if(country === "CA" && (name === "Rogers" || name === "Bell" || name === "Telus") && index == 1){
+                  console.log("Link");  
+                  window.location.href = "https://docs.google.com/forms/d/1qe7hZj1HzTRQYU6xtORygzIcUE_1EUmVfExHW_Myv7Y/formrestricted"
+                }
+              }} />
+              
+              
+              
+              {name === "AT&T" && index == 2 && (
+                <div className='bg-black/0 absolute top-[50%] left-[20%] flex gap-2 right-[8%]'>
+                  <a href="https://docs.google.com/presentation/d/1ozAqB0m_MyqyG1LwVb7oBzAyPhu5qLUgQ9WKVWHZFNg/edit#slide=id.g2cae7cf6e6d_1_12" className='relative w-full h-10 bg-black/0' target='_blank'></a>
+                  <a href="https://docs.google.com/presentation/d/1o8L1KoT869XOBpDjf1heziup3jcgHcUwbBF1pnGwfKM/edit#slide=id.g2cae7cf6e6d_1_0" className='relative w-full h-10 bg-black/0' target='_blank'></a>
+                  <a href="https://docs.google.com/presentation/d/1FlE3Erf8F52t7jhPY0g_4wYji1tE-YzW4DMPs5mPnTE/edit#slide=id.g2cae7cf6e6d_1_24" className='relative w-full h-10 bg-black/0' target='_blank'></a>
+                  <a href="https://docs.google.com/presentation/d/1uus22kWoKBWo9b3drQQFNUrJbjsAt7dspesttCa40Bg/edit" className='relative w-full h-10 bg-black/0' target='_blank'></a>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+
+
+      {/* <div className='flex flex-col gap-4 pl-4 pr-6 pb-8 mt-4'>
         <div className='flex gap-4'>
           <div className='relative w-16 h-16'>
             <p className='absolute text-googleBlue-500 top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]'>1</p>
@@ -69,7 +149,7 @@ const Weekly = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </main>
   )
 }
