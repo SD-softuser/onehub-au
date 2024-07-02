@@ -19,9 +19,6 @@ function App() {
 
   return (
     <div>
-      <nav className="fixed text-center bg-yellow-500/80 w-full backdrop-blur-xl z-[10000] py-1">
-        This is for testing only
-      </nav>
       <div>
         <Toaster
           position="top-center"
