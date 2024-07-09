@@ -17,7 +17,7 @@ const createTcpPool = async (config) => {
     port: "3306",
     user: "insert_ac",
     password: "google@123",
-    database: "onehub_db",
+    database: "onehub_db_testing",
     ...config,
   };
   return mysql.createPool(dbConfig);
@@ -230,7 +230,7 @@ app.get("/api/fetchCountry", async (req, res) => {
     const connection = await pool.getConnection();
     const query = `
       SELECT country FROM
-      onehub_db.TSM_ASM_merged where TAG=?;
+      onehub_db_testing.TSM_ASM_merged where TAG=?;
     `;
     const values = [territory_id];
     const rows = await connection.query(query, values);
@@ -259,7 +259,7 @@ app.post("/api/createEntry", async (req, res) => {
 
   try {
     const connection = await pool.getConnection();
-    const query = `insert into onehub_db.Daily_sales (sales,id,product_model ,territory, store_name,city,date,country,partner) values(?,?,?,?,?,?,?,?,?)`;
+    const query = `insert into onehub_db_testing.Daily_sales (sales,id,product_model ,territory, store_name,city,date,country,partner) values(?,?,?,?,?,?,?,?,?)`;
     const values = [sales, id, productModel, territory_id, store_name, city, date, country, partner];
     const rows = await connection.query(query, values);
     connection.release();
@@ -280,5 +280,4 @@ app.use(express.static(path.join(__dirname, "/../frontend/dist")));
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "frontend", "dist", "index.html"));
 });
-
 
