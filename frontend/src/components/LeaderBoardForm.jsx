@@ -10,7 +10,7 @@ import TableSkeleton from "./TableSkeleton";
 import toast from "react-hot-toast";
 
 const getCode = (selectedPartner) => {
-  if(selectedPartner == "at&t")
+  if (selectedPartner == "at&t")
     return "ATT%"
   else if (selectedPartner == "verizon")
     return "VZW%"
@@ -41,7 +41,7 @@ const LeaderBoardForm = () => {
 
   const [date, setDate] = useState(convertDate(Date.now()));
   const [tableData, setTableData] = useState([]);
-  console.log(tableData);
+  // console.log(tableData);
   const [originalTableData, setOriginalTableData] = useState([]);
   const [template, setTemplate] = useState([]);
   // console.log(template);
@@ -63,6 +63,9 @@ const LeaderBoardForm = () => {
 
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.loader.isLoading);
+
+  const { data } = useSelector((state) => state.data);
+  console.log(data);
 
   const handleDateChange = (e) => {
     const year = e.year;
@@ -91,7 +94,7 @@ const LeaderBoardForm = () => {
         const response = await axios.get(
           `/api/fetchProductSales?territory_id=${encodedTerritory}&partner=${encodedPartner}&code=${encodedCode}`
         );
-        console.log("Data is : ", response.data);
+        // console.log("Data is : ", response.data);
         setAllData(response.data);
         setTemplate(response.data);
         filterDataByDate(response.data, date);
@@ -213,7 +216,7 @@ const LeaderBoardForm = () => {
               store_name: tableRow.store_name,
               productModel: newKey
             };
-            console.log(obj);
+            // console.log(obj);
             promises.push(axios.post("/api/createEntry", obj));
           }
         }
@@ -221,7 +224,7 @@ const LeaderBoardForm = () => {
 
       await Promise.all(promises);
       toast.success('Added Successfully!')
-      console.log("All requests completed");
+      // console.log("All requests completed");
     } catch (err) {
       console.error("Error saving data:", err);
     } finally {
@@ -241,19 +244,19 @@ const LeaderBoardForm = () => {
     setIsAdd(!isAdd);
     setIsEdit(false);
   }
-  
+
   const handlePartnerSelect = (partner) => {
     dispatch(setSelectedPartner(partner));
   };
- 
+
   if (isLoading) {
     return <TableSkeleton />
   }
 
   return (
     <div className="bg-white w-full px-4 py-4 rounded-xl shadow-md">
-      {/* Partners */}
-      <div className="flex gap-3">
+      {/* Fetching from GCP */}
+      {/* <div className="flex gap-3">
         {partners.map((partner, index) => (
           <button
             className={`flex flex-row gap-3 justify-center items-center px-4 py-2 border-[1px] rounded-xl ${selectedPartner === partner
@@ -271,6 +274,26 @@ const LeaderBoardForm = () => {
               />
             )}
             <h6>{partner}</h6>
+          </button>
+        ))}
+      </div> */}
+
+      <div className="flex gap-3">
+        {data && data.map((partner, index) => (
+          <button
+            className={`flex flex-row gap-3 justify-center items-center px-4 py-2 border-[1px] rounded-xl ${selectedPartner === partner.name
+              ? "border-googleBlue-500 text-googleBlue-500"
+              : ""
+              }`}
+            onClick={() => handlePartnerSelect(partner.name)}
+            key={index}
+          >
+              <img
+                src={partner.Logo.logo}
+                alt={selectedPartner}
+                className="h-6 w-7"
+              />
+            <h6>{partner.name}</h6>
           </button>
         ))}
       </div>

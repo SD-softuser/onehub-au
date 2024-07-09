@@ -5,7 +5,7 @@ export const fetchPartners = createAsyncThunk('partners/fetchPartners', async (c
   const response = await axios.get(
     `https://storehub-image.testexperience.site/next_level/storehub-company/${country}`
   );
-  console.log("redux response ", response.data);
+  // console.log("redux response ", response.data);
   return response.data.subfolders;
 });
 

@@ -11,6 +11,7 @@ import { fetchPartners } from "../app/slices/partnersSlice";
 import { fetchPartnerDetails, setSelectedPartner } from "../app/slices/partnerDetailsSlice";
 import { fetchBanners } from "../app/slices/bannersSlice";
 import SkeletonLoader from "../components/SkeletonLoader";
+import { fetchData } from "../app/slices/dataSlice";
 
 const HomePage = () => {
   const [opened, setOpened] = useState(false);
@@ -23,6 +24,7 @@ const HomePage = () => {
   const partnerDetails = useSelector((state) => state.partnerDetails.details);
   const selectedPartner = useSelector((state) => state.partnerDetails.selectedPartner);
   const banners = useSelector((state) => state.banners.banners);
+  const { data } = useSelector((state) => state.data);
 
   const countryStatus = useSelector((state) => state.country.status);
   const partnersStatus = useSelector((state) => state.partners.status);
@@ -38,6 +40,7 @@ const HomePage = () => {
   useEffect(() => {
     if (country) {
       dispatch(fetchPartners(country));
+      dispatch(fetchData(country));
     }
   }, [country, dispatch]);
 
@@ -60,6 +63,7 @@ const HomePage = () => {
 
   const handlePartnerSelect = (partner) => {
     dispatch(setSelectedPartner(partner));
+    console.log(selectedPartner);
   };
 
   if (countryStatus === 'loading' || partnersStatus === 'loading' || partnerDetailsStatus === 'loading') {
@@ -73,7 +77,9 @@ const HomePage = () => {
   return (
     <MaxWidthWrapper className="flex flex-col gap-6 py-10">
       <main className="w-full bg-white rounded-lg px-6 py-10 shadow-md">
-        <div className="flex justify-center items-center gap-4 px-4 py-3 rounded-full shadow-md">
+
+        {/* Fetching from GCP */}
+        {/* <div className="flex justify-center items-center gap-4 px-4 py-3 rounded-full shadow-md">
           {partners && partnerDetails && partners.map((partner, index) => (
             <div
               className="cursor-pointer"
@@ -85,9 +91,25 @@ const HomePage = () => {
               )}
             </div>
           ))}
+        </div> */}
+
+        <div className="flex justify-center items-center gap-4 px-4 py-3 rounded-full shadow-md">
+          {data && data.map((partner, index) => {
+            // console.log(partner);
+            return (
+              <div
+                className="cursor-pointer"
+                onClick={() => handlePartnerSelect(partner.name)}
+                key={index}
+              >
+                <img src={selectedPartner === partner.name ? partner.Logo.checked : partner.Logo.unchecked} alt={partner.name} />
+              </div>
+            )
+          })}
         </div>
 
-        {bannersStatus === 'loading' ? (
+        {/* GCP Fetch */}
+        {/* {bannersStatus === 'loading' ? (
           <div className="animate-pulse relative grid grid-cols-2 mt-4 gap-4 h-full w-full overflow-hidden">
             <div className="w-full h-52 bg-gradient-to-b from-gray-200 to-transparent rounded-md"></div>
             <div className="w-full h-52 bg-gradient-to-b from-gray-200 to-transparent rounded-md"></div>
@@ -116,7 +138,34 @@ const HomePage = () => {
               {opened ? <FaChevronUp /> : <FaChevronDown />}
             </button>
           </>
-        )}
+        )} */}
+
+        {data && (() => {
+          const selectedPartnerData = data.find(partner => partner.name === selectedPartner);
+          const bannerValues = selectedPartnerData?.Banner ? Object.values(selectedPartnerData.Banner) : [];
+
+          return selectedPartnerData?.Banner && (
+            <>
+              <div className={`relative grid grid-cols-2 mt-4 gap-4 ${opened || (bannerValues.length && bannerValues.length <= 2) ? "h-full" : "h-60 overflow-hidden"}`}>
+                {bannerValues.map((banner, index) => (
+                  <img src={banner} key={index} alt={`Banner ${index}`} />
+                ))}
+                {(!opened && bannerValues.length > 2) && (
+                  <div className="absolute h-full w-full bg-gradient-to-t from-white to-transparent to-40%"></div>
+                )}
+              </div>
+
+              {bannerValues.length > 2 && <button
+                className="mx-auto bg bg-googleBlue-100 text-googleBlue-500 px-6 py-1.5 rounded-full font-medium flex justify-center items-center text-sm gap-2 my-2"
+                onClick={() => setOpened(!opened)}
+              >
+                <h2>{opened ? "Collapse" : "View All"}</h2>
+                {opened ? <FaChevronUp /> : <FaChevronDown />}
+              </button>}
+            </>
+          );
+        })()}
+
 
         {partnerDetails && selectedPartner && (
           <div className="w-full bg-[#F5F5F5] flex justify-between px-3 py-2 rounded-xl mt-4">
