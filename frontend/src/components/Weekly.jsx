@@ -56,7 +56,7 @@ const Weekly = () => {
       <div className='w-full flex justify-center items-center mb-4'>
         <div className='bg-googleBlue-50 font-medium px-2 py-1 rounded-lg'>
           <h6 className='text-[#164EA7] text-center'>
-            Week of July 1st
+            Week of July 8th
           </h6>
         </div>
       </div>
@@ -90,7 +90,7 @@ const Weekly = () => {
                 <div>
                   {card.imageURL && <img src={card.imageURL} alt="" className='object-contain' />}
                 </div>
-              
+
                 <div className='bg-googleBlue-50 rounded-xl px-4 py-3'>
                   <h6>
                     {card.description}
