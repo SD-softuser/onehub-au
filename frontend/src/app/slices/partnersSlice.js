@@ -3,10 +3,14 @@ import axios from 'axios';
 
 export const fetchPartners = createAsyncThunk('partners/fetchPartners', async (country) => {
   const response = await axios.get(
-    `https://storehub-image.testexperience.site/next_level/storehub-company/${country}`
+    `https://cms-data.testexperience.site/completedatafetcher/test-store-hub-page-logos/${country}`
   );
-  // console.log("redux response ", response.data);
-  return response.data.subfolders;
+  const data = response.data;
+  const firstKey = Object.keys(data)[0];
+  const keysArray = Object.keys(data[firstKey]);
+  // console.log("Redux" , keysArray);
+
+  return keysArray;
 });
 
 const initialState = {

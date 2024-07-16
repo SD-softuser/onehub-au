@@ -77,33 +77,38 @@ const Weekly = () => {
         </div>
       ) : weeklyStatus === 'succeeded' ? (
         <div className='flex flex-col gap-4 pl-4 pr-6 pb-8 mt-4'>
-          {weekly && weekly.map((card, index) => (
-            <div className='flex gap-4' key={index}>
-              <div className='relative w-16 h-16'>
-                <p className='absolute text-googleBlue-500 top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]'>
-                  {card.order || index + 1}
-                </p>
-                <img src="/assets/Index Vector.png" alt="vector" className='object-contain' />
-              </div>
+          {weekly && weekly.map((card, index) => {
+            const handleCardClick = (link) => {
+              if (card.link) {
+                window.open(link, "_blank");
+              }
+            };
 
-              <div className='flex-1 flex flex-col gap-4'>
-                <div>
-                  {card.imageUrl && <img src={card.imageUrl} alt={card.name} className='object-contain' />}
+            return (
+              <div className='flex gap-4' key={index}>
+                <div className='relative w-16 h-16'>
+                  <p className='absolute text-googleBlue-500 top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]'>
+                    {card.order || index + 1}
+                  </p>
+                  <img src="/assets/Index Vector.png" alt="vector" className='object-contain' />
                 </div>
 
-                <div className='bg-googleBlue-50 rounded-xl px-4 py-3'>
-                  <h6>
-                    {card.description}
-                  </h6>
+                <div className={`flex-1 flex flex-col gap-4 ${card.link && "cursor-pointer"}`}>
+                  <div onClick={() => handleCardClick(card.link)}>
+                    {card.imageUrl && <img src={card.imageUrl} alt={card.name} className='object-contain' />}
+                  </div>
+
+                  <div className='bg-googleBlue-50 rounded-xl px-4 py-3'>
+                    <h6>
+                      {card.description}
+                    </h6>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       ) : null}
-
-
-
 
     </main>
   )

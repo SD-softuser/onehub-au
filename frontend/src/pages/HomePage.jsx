@@ -25,13 +25,10 @@ const HomePage = () => {
   const partnerDetails = useSelector((state) => state.partnerDetails.details);
   const selectedPartner = useSelector((state) => state.partnerDetails.selectedPartner);
   const banners = useSelector((state) => state.banners.banners);
-  const { data } = useSelector((state) => state.data);
-  console.log(data);
 
   const countryStatus = useSelector((state) => state.country.status);
   const partnersStatus = useSelector((state) => state.partners.status);
   const partnerDetailsStatus = useSelector((state) => state.partnerDetails.status);
-  const bannersStatus = useSelector((state) => state.banners.status);
 
 
   useEffect(() => {
@@ -44,7 +41,6 @@ const HomePage = () => {
   useEffect(() => {
     if (country) {
       dispatch(fetchPartners(country));
-      dispatch(fetchData(country));
     }
   }, [country, dispatch]);
 
@@ -70,7 +66,6 @@ const HomePage = () => {
   
   const handlePartnerSelect = (partner) => {
     dispatch(setSelectedPartner(partner));
-    // console.log(selectedPartner);
   };
 
   
@@ -102,7 +97,7 @@ const HomePage = () => {
         </div> */}
 
         <div className="flex justify-center items-center gap-4 px-4 py-3 rounded-full shadow-md">
-          {data && data.map((partner, index) => {
+          {partnerDetails && Array.from(Object.values(partnerDetails)).map((partner, index) => {
             // console.log(partner);
             return (
               <div
@@ -110,7 +105,7 @@ const HomePage = () => {
                 onClick={() => handlePartnerSelect(partner.name)}
                 key={index}
               >
-                <img src={selectedPartner === partner.name ? partner.Logo.checked : partner.Logo.unchecked} alt={partner.name} />
+                <img src={selectedPartner === partner.name ? partner.checked : partner.unchecked} alt={partner.name} />
               </div>
             )
           })}
@@ -148,22 +143,22 @@ const HomePage = () => {
           </>
         )} */}
 
-        {data && (() => {
-          const selectedPartnerData = data.find(partner => partner.name === selectedPartner);
-          const bannerValues = selectedPartnerData?.Banner ? Object.values(selectedPartnerData.Banner) : [];
+        {banners && (() => {
+          const bannersArray = Array.from(Object.values(banners));
+          const bannersLength = bannersArray.length;
 
-          return selectedPartnerData?.Banner && (
+          return banners && (
             <>
-              <div className={`relative grid grid-cols-2 mt-4 gap-4 ${opened || (bannerValues.length && bannerValues.length <= 2) ? "h-full" : "h-60 overflow-hidden"}`}>
-                {bannerValues.map((banner, index) => (
-                  <img src={banner} key={index} alt={`Banner ${index}`} />
+              <div className={`relative grid grid-cols-2 mt-4 gap-4 ${opened || (bannersLength && bannersLength <= 2) ? "h-full" : "h-60 overflow-hidden"}`}>
+                {bannersArray.map((banner, index) => (
+                  <img src={banner.imageUrl} key={index} alt={`Banner ${index}`} />
                 ))}
-                {(!opened && bannerValues.length > 2) && (
+                {(!opened && bannersLength > 2) && (
                   <div className="absolute h-full w-full bg-gradient-to-t from-white to-transparent to-40%"></div>
                 )}
               </div>
 
-              {bannerValues.length > 2 && <button
+              {bannersLength > 2 && <button
                 className="mx-auto bg bg-googleBlue-100 text-googleBlue-500 px-6 py-1.5 rounded-full font-medium flex justify-center items-center text-sm gap-2 my-2"
                 onClick={() => setOpened(!opened)}
               >

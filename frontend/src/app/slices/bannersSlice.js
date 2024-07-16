@@ -27,13 +27,14 @@ export const fetchBanners = createAsyncThunk(
     // return response.data.images; // Assuming the API returns only images array
   
     const response = await axios.get(
-      `https://cms-data.testexperience.site/completedatafetcher/test-store-hub-page/${country}`
+      `https://cms-data.testexperience.site/completedatafetcher/test-store-hub-page-banners/${country}/${partner}`
     );
     const data = response.data;
     const value = Object.values(data)[0];
-    const partners = Object.keys(value);
 
-    return partners;
+    // console.log("Redux - ", value);
+
+    return value;
   }
 );
 

@@ -15,6 +15,8 @@ export const fetchPartnerDetails = createAsyncThunk(
     const square = value.logo;
     const unchecked = value.unchecked;
 
+    // console.log("Redux", { partner, checked, square, unchecked });
+
     return { partner, checked, square, unchecked };
   }
 );
@@ -45,7 +47,7 @@ const partnerDetailsSlice = createSlice({
       .addCase(fetchPartnerDetails.fulfilled, (state, action) => {
         state.status = 'succeeded';
         const { partner, checked, square, unchecked } = action.payload;
-        state.details[partner] = { checked, square, unchecked };
+        state.details[partner] = { checked, square, unchecked, name: partner };
       })
       .addCase(fetchPartnerDetails.rejected, (state, action) => {
         state.status = 'failed';
