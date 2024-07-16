@@ -88,7 +88,7 @@ const Weekly = () => {
 
               <div className='flex-1 flex flex-col gap-4'>
                 <div>
-                  {card.imageURL && <img src={card.imageURL} alt="" className='object-contain' />}
+                  {card.imageUrl && <img src={card.imageUrl} alt={card.name} className='object-contain' />}
                 </div>
 
                 <div className='bg-googleBlue-50 rounded-xl px-4 py-3'>

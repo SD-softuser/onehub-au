@@ -32,13 +32,12 @@ export const fetchWeekly = createAsyncThunk('data/fetchWeekly', async ({ country
   dispatch(showLoader());
   try {
     const response = await axios.get(
-      `https://cms-data.testexperience.site/completedatafetcher/test-store-hub-page/${country}/${partner}`
+      `https://cms-data.testexperience.site/completedatafetcher/test-store-hub-page-weekly/${country}/${partner}`
     );
+    const data = response.data;
+    const [extractedObj] = Object.values(data);
+    const dataArray = Array.from(Object.values(extractedObj));
 
-    const data = Object.values(response.data)[0];
-    const { Banner, Logo, ...remainingValues } = data;
-    const dataArray = Object.values(remainingValues);
-    
     return dataArray;
   } catch (error) {
     throw error;
