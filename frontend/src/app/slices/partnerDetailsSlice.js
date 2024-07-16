@@ -5,13 +5,15 @@ export const fetchPartnerDetails = createAsyncThunk(
   'partnerDetails/fetchPartnerDetails',
   async ({ country, partner }) => {
     const response = await axios.get(
-      `https://storehub-image.testexperience.site/next_level/storehub-company/${country}/${partner}`
+      `https://cms-data.testexperience.site/completedatafetcher/test-store-hub-page-logos/${country}/${partner}`
     );
 
-    const { images } = response.data;
-    const checked = images[0];
-    const square = images[1];
-    const unchecked = images[2];
+    const data = response.data;
+    const value = Object.values(data)[0].Logo;
+    
+    const checked = value.checked;
+    const square = value.logo;
+    const unchecked = value.unchecked;
 
     return { partner, checked, square, unchecked };
   }

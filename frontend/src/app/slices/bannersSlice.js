@@ -7,13 +7,33 @@ const initialState = {
   error: null,
 };
 
+// export const fetchBanners = createAsyncThunk(
+//   'banners/fetchBanners',
+//   async ({ country, partner }) => {
+//     const response = await axios.get(
+//       `https://storehub-image.testexperience.site/next_level/storehub-company/${country}/${partner}/banners`
+//     );
+//     return response.data.images; // Assuming the API returns only images array
+//   }
+// );
+
+
 export const fetchBanners = createAsyncThunk(
   'banners/fetchBanners',
   async ({ country, partner }) => {
+    // const response = await axios.get(
+    //   `https://storehub-image.testexperience.site/next_level/storehub-company/${country}/${partner}/banners`
+    // );
+    // return response.data.images; // Assuming the API returns only images array
+  
     const response = await axios.get(
-      `https://storehub-image.testexperience.site/next_level/storehub-company/${country}/${partner}/banners`
+      `https://cms-data.testexperience.site/completedatafetcher/test-store-hub-page/${country}`
     );
-    return response.data.images; // Assuming the API returns only images array
+    const data = response.data;
+    const value = Object.values(data)[0];
+    const partners = Object.keys(value);
+
+    return partners;
   }
 );
 

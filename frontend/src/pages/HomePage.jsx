@@ -14,9 +14,10 @@ import SkeletonLoader from "../components/SkeletonLoader";
 import { fetchData } from "../app/slices/dataSlice";
 
 const HomePage = () => {
-  const [opened, setOpened] = useState(false);
   const query = useQuery();
   const territory_id = query.get("territory_id");
+  
+  const [opened, setOpened] = useState(false);
 
   const dispatch = useDispatch();
   const country = useSelector((state) => state.country.country);
@@ -25,11 +26,13 @@ const HomePage = () => {
   const selectedPartner = useSelector((state) => state.partnerDetails.selectedPartner);
   const banners = useSelector((state) => state.banners.banners);
   const { data } = useSelector((state) => state.data);
+  console.log(data);
 
   const countryStatus = useSelector((state) => state.country.status);
   const partnersStatus = useSelector((state) => state.partners.status);
   const partnerDetailsStatus = useSelector((state) => state.partnerDetails.status);
   const bannersStatus = useSelector((state) => state.banners.status);
+
 
   useEffect(() => {
     if (territory_id) {
@@ -37,6 +40,7 @@ const HomePage = () => {
     }
   }, [territory_id, dispatch]);
 
+  
   useEffect(() => {
     if (country) {
       dispatch(fetchPartners(country));
@@ -44,6 +48,7 @@ const HomePage = () => {
     }
   }, [country, dispatch]);
 
+  
   useEffect(() => {
     if (country && partners.length > 0) {
       partners.forEach(partner => {
@@ -55,17 +60,20 @@ const HomePage = () => {
     }
   }, [country, partners, dispatch]);
 
+  
   useEffect(() => {
     if (selectedPartner) {
       dispatch(fetchBanners({ country, partner: selectedPartner }));
     }
   }, [selectedPartner, country, dispatch]);
 
+  
   const handlePartnerSelect = (partner) => {
     dispatch(setSelectedPartner(partner));
-    console.log(selectedPartner);
+    // console.log(selectedPartner);
   };
 
+  
   if (countryStatus === 'loading' || partnersStatus === 'loading' || partnerDetailsStatus === 'loading') {
     return (
       <MaxWidthWrapper className="flex flex-col gap-6">

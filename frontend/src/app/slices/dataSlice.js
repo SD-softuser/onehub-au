@@ -40,6 +40,24 @@ export const fetchData = createAsyncThunk('data/fetchData', async (country, { di
       return { name: key, ...value };
     });
     return arrayOfObjects;
+    
+    // const response1 = await axios.get(
+    //   `https://cms-data.testexperience.site/completedatafetcher/test-store-hub-page-banners/${country}`
+    // );
+    // console.log(response1.data);
+    // const data1 = response1.data;
+    // const value1 = Object.values(data1)[0];
+    // console.log(value1);
+
+    // const response2 = await axios.get(
+    //   `https://cms-data.testexperience.site/completedatafetcher/test-store-hub-page-logos/${country}`
+    // );
+    // console.log(response2.data);
+    // const data2 = response2.data;
+    // const value2 = Object.values(data2)[0];
+    // console.log(value2);
+
+    return null;
   } catch (error) {
     throw error;
   } finally {

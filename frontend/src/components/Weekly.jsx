@@ -56,7 +56,7 @@ const Weekly = () => {
       <div className='w-full flex justify-center items-center mb-4'>
         <div className='bg-googleBlue-50 font-medium px-2 py-1 rounded-lg'>
           <h6 className='text-[#164EA7] text-center'>
-            Week of July 8th
+            Week of July 15th
           </h6>
         </div>
       </div>
