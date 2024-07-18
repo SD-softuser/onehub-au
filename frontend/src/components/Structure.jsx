@@ -56,7 +56,7 @@ const RenderTasks = ({ tasks, checked, handleChange, handleChildChange }) => {
   });
 };
 
-const Structure = () => {
+const Structure = ({name}) => {
   const [checked, setChecked] = useState({});
   console.log(checked);
 
@@ -88,7 +88,7 @@ const Structure = () => {
     <main className='bg-white w-full rounded-2xl shadow-lg'>
       <div className='py-4 px-4 relative'>
         <h1 className='text-4xl text-googleBlue-400'>
-          Your Day at Best Buy
+          Your Day at {name}
         </h1>
         <div className='absolute top-4 right-4 w-32 h-32 rounded-full border-[1px]'>
           <img src="/assets/Structure Vector.png" alt="" />

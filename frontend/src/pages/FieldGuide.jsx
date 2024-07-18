@@ -35,7 +35,7 @@ const FieldGuide = () => {
 
       <MaxWidthWrapper className="py-28 flex flex-col justify-between">
         {mode === 'structure' ? (
-          <Structure />
+          <Structure name={name} />
         ) : (
           <Weekly />
         )}
