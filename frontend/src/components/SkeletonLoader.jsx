@@ -7,9 +7,10 @@ const SkeletonLoader = () => {
     <div className="w-full bg-white rounded-lg px-6 py-10 shadow-md mt-8">
       {/* Placeholder elements for loading state */}
       <div className="animate-pulse flex justify-center items-center gap-4 px-4 py-3 rounded-full shadow-md">
-        <div className="w-20 h-20 bg-gray-200 rounded-full"></div>
-        <div className="w-20 h-20 bg-gray-200 rounded-full"></div>
-        <div className="w-20 h-20 bg-gray-200 rounded-full"></div>
+        <div className="w-full h-20 bg-gray-200 rounded-full"></div>
+        <div className="w-full h-20 bg-gray-200 rounded-full"></div>
+        <div className="w-full h-20 bg-gray-200 rounded-full"></div>
+        <div className="w-full h-20 bg-gray-200 rounded-full"></div>
       </div>
 
       <div className="animate-pulse relative grid grid-cols-2 mt-4 gap-4 h-60 overflow-hidden">

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MaxWidthWrapper from "../components/MaxWidthWrapper";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp, FaImage } from "react-icons/fa";
 import { HiOutlineArrowTopRightOnSquare } from "react-icons/hi2";
 import { Link } from "react-router-dom";
 import useQuery from "../utils/useQuery";
@@ -12,11 +12,12 @@ import { fetchPartnerDetails, setSelectedPartner } from "../app/slices/partnerDe
 import { fetchBanners } from "../app/slices/bannersSlice";
 import SkeletonLoader from "../components/SkeletonLoader";
 import { fetchData } from "../app/slices/dataSlice";
+import SuspenseImage from "../components/SuspenseImage";
 
 const HomePage = () => {
   const query = useQuery();
   const territory_id = query.get("territory_id");
-  
+
   const [opened, setOpened] = useState(false);
 
   const dispatch = useDispatch();
@@ -24,7 +25,7 @@ const HomePage = () => {
   const partners = useSelector((state) => state.partners.partners);
   const partnerDetails = useSelector((state) => state.partnerDetails.details);
   const selectedPartner = useSelector((state) => state.partnerDetails.selectedPartner);
-  const banners = useSelector((state) => state.banners.banners);
+  const { banners, status: bannerStatus } = useSelector((state) => state.banners);
 
   const countryStatus = useSelector((state) => state.country.status);
   const partnersStatus = useSelector((state) => state.partners.status);
@@ -37,14 +38,14 @@ const HomePage = () => {
     }
   }, [territory_id, dispatch]);
 
-  
+
   useEffect(() => {
     if (country) {
       dispatch(fetchPartners(country));
     }
   }, [country, dispatch]);
 
-  
+
   useEffect(() => {
     if (country && partners.length > 0) {
       partners.forEach(partner => {
@@ -56,19 +57,19 @@ const HomePage = () => {
     }
   }, [country, partners, dispatch]);
 
-  
+
   useEffect(() => {
     if (selectedPartner) {
       dispatch(fetchBanners({ country, partner: selectedPartner }));
     }
   }, [selectedPartner, country, dispatch]);
 
-  
+
   const handlePartnerSelect = (partner) => {
     dispatch(setSelectedPartner(partner));
   };
 
-  
+
   if (countryStatus === 'loading' || partnersStatus === 'loading' || partnerDetailsStatus === 'loading') {
     return (
       <MaxWidthWrapper className="flex flex-col gap-6">
@@ -147,11 +148,27 @@ const HomePage = () => {
           const bannersArray = Array.from(Object.values(banners));
           const bannersLength = bannersArray.length;
 
+          if (bannerStatus === "loading") {
+            return (
+              <div className="animate-pulse relative grid grid-cols-2 mt-4 gap-4 h-60 overflow-hidden">
+                <div className='w-full aspect-[50/15] bg-gray-100 flex justify-center items-center rounded-lg'>
+                  <FaImage className='text-zinc-400 animate-pulse' size={32} />
+                </div>
+                <div className='w-full aspect-[50/15] bg-gray-100 flex justify-center items-center rounded-lg'>
+                  <FaImage className='text-zinc-400 animate-pulse' size={32} />
+                </div>
+                <div className="absolute h-full w-full bg-gradient-to-t from-white to-transparent to-40%"></div>
+              </div>
+            );
+          }
+
           return banners && (
             <>
               <div className={`relative grid grid-cols-2 mt-4 gap-4 ${opened || (bannersLength && bannersLength <= 2) ? "h-full" : "h-60 overflow-hidden"}`}>
                 {bannersArray.map((banner, index) => (
-                  <img src={banner.imageUrl} key={index} alt={`Banner ${index}`} />
+                  <div className="w-full">
+                    <SuspenseImage src={banner.imageUrl} key={index} alt={`Banner ${index}`} />
+                  </div>
                 ))}
                 {(!opened && bannersLength > 2) && (
                   <div className="absolute h-full w-full bg-gradient-to-t from-white to-transparent to-40%"></div>
