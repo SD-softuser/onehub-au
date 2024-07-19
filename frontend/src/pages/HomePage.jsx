@@ -107,7 +107,7 @@ const HomePage = () => {
                 onClick={() => handlePartnerSelect(partner.name)}
                 key={index}
               >
-                <img src={selectedPartner === partner.name ? partner.checked : partner.unchecked} alt={partner.name} className={`${selectedPartner === partner.name && "border-googleBlue-500 border-2 rounded-full"}`}/>
+                <img src={selectedPartner === partner.name ? partner.checked : partner.unchecked} alt={partner.name} className={`${selectedPartner === partner.name && "border-googleBlue-500 border-2 rounded-full"}`} />
               </div>
             )
           })}
@@ -151,14 +151,17 @@ const HomePage = () => {
 
           if (bannerStatus === "loading") {
             return (
-              <div className="animate-pulse relative grid grid-cols-2 mt-4 gap-4 h-60 overflow-hidden">
-                <div className='w-full aspect-[50/15] bg-gray-100 flex justify-center items-center rounded-lg'>
-                  <FaImage className='text-zinc-400 animate-pulse' size={32} />
-                </div>
-                <div className='w-full aspect-[50/15] bg-gray-100 flex justify-center items-center rounded-lg'>
-                  <FaImage className='text-zinc-400 animate-pulse' size={32} />
-                </div>
-                <div className="absolute h-full w-full bg-gradient-to-t from-white to-transparent to-40%"></div>
+              // <div className="animate-pulse relative grid grid-cols-2 mt-4 gap-4 h-60 overflow-hidden">
+              //   <div className='w-full aspect-[50/15] bg-gray-100 flex justify-center items-center rounded-lg'>
+              //     <FaImage className='text-zinc-400 animate-pulse' size={32} />
+              //   </div>
+              //   <div className='w-full aspect-[50/15] bg-gray-100 flex justify-center items-center rounded-lg'>
+              //     <FaImage className='text-zinc-400 animate-pulse' size={32} />
+              //   </div>
+              //   <div className="absolute h-full w-full bg-gradient-to-t from-white to-transparent to-40%"></div>
+              // </div>
+              <div className="h-60 overflow-hidden flex justify-center items-center">
+                <div className='bg-white w-16 h-16 border-t-4 border-blue-500 rounded-full animate-spin'></div>
               </div>
             );
           }

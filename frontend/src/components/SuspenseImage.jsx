@@ -5,7 +5,7 @@ import clsx from 'clsx';
 const ImageSkeleton = () => {
   return (
     <div className='h-44 w-full bg-gray-200 flex justify-center items-center rounded-lg'>
-      <FaImage className='text-zinc-400 animate-pulse' size={32} />
+      <div className='bg-gray-200 w-16 h-16 border-t-4 border-blue-500 rounded-full animate-spin'></div>
     </div>
   );
 }
@@ -23,13 +23,13 @@ const SuspenseImage = ({ src, alt }) => {
   return (
     <div className="h-full w-full relative">
       {!loaded && <ImageSkeleton />}
-      <img 
-        src={src} 
-        alt={alt} 
+      <img
+        src={src}
+        alt={alt}
         className={clsx(
           'h-full w-full object-contain rounded-lg transition-opacity duration-500',
           { 'opacity-0': !loaded, 'opacity-100': loaded }
-        )} 
+        )}
         loading="lazy"
       />
     </div>
