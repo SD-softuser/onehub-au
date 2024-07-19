@@ -35,6 +35,7 @@ const HomePage = () => {
   useEffect(() => {
     if (territory_id) {
       dispatch(fetchCountry(territory_id));
+      console.log(country);
     }
   }, [territory_id, dispatch]);
 
@@ -106,7 +107,7 @@ const HomePage = () => {
                 onClick={() => handlePartnerSelect(partner.name)}
                 key={index}
               >
-                <img src={selectedPartner === partner.name ? partner.checked : partner.unchecked} alt={partner.name} />
+                <img src={selectedPartner === partner.name ? partner.checked : partner.unchecked} alt={partner.name} className={`${selectedPartner === partner.name && "border-googleBlue-500 border-2 rounded-full"}`}/>
               </div>
             )
           })}

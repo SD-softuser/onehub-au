@@ -17,7 +17,7 @@ const createTcpPool = async (config) => {
     port: "3306",
     user: "insert_ac",
     password: "google@123",
-    database: "onehub_db_testing",
+    database: "onehub_db_testing_au",
     ...config,
   };
   return mysql.createPool(dbConfig);
@@ -155,13 +155,13 @@ app.get("/api/fetchLeaderBoard", async (req, res) => {
 // });
 
 app.get("/api/fetchProductSales", async (req, res) => {
-  const { territory_id, partner, code } = req.query;
+  const { territory_id, partner } = req.query;
   console.log("Request received with params:", { territory_id, partner });
 
-  if (!territory_id || !partner || !code) {
+  if (!territory_id || !partner) {
     return res.status(400).send({
       message: "Please provide territory and partner",
-      data: `${territory_id}, ${partner}, ${code}`,
+      data: `${territory_id}, ${partner}`,
     });
   }
 
@@ -178,10 +178,10 @@ app.get("/api/fetchProductSales", async (req, res) => {
       MAX(CASE WHEN product_model = 'Pixel 8 Pro' THEN sales ELSE 0 END) AS 'Pixel 8 Pro',
       MAX(CASE WHEN product_model = 'Pixel Watch' THEN sales ELSE 0 END) AS 'Pixel Watch'
     FROM Daily_sales
-    WHERE territory = ? AND partner = ? AND store_name like ?
+    WHERE territory = ? AND partner = ?
     GROUP BY store_name, city, date
     ORDER BY store_name, date`;
-    const values = [territory_id, partner, code];
+    const values = [territory_id, partner];
     const rows = await connection.query(query, values);
     connection.release(); // Release the connection back to the pool
 
@@ -230,7 +230,7 @@ app.get("/api/fetchCountry", async (req, res) => {
     const connection = await pool.getConnection();
     const query = `
       SELECT country FROM
-      onehub_db_testing.TSM_ASM_merged where TAG=?;
+      onehub_db_testing_au.TSM_ASM_merged where TAG=?;
     `;
     const values = [territory_id];
     const rows = await connection.query(query, values);
@@ -259,7 +259,7 @@ app.post("/api/createEntry", async (req, res) => {
 
   try {
     const connection = await pool.getConnection();
-    const query = `insert into onehub_db_testing.Daily_sales (sales,id,product_model ,territory, store_name,city,date,country,partner) values(?,?,?,?,?,?,?,?,?)`;
+    const query = `insert into onehub_db_testing_au.Daily_sales (sales,id,product_model ,territory, store_name,city,date,country,partner) values(?,?,?,?,?,?,?,?,?)`;
     const values = [sales, id, productModel, territory_id, store_name, city, date, country, partner];
     const rows = await connection.query(query, values);
     connection.release();

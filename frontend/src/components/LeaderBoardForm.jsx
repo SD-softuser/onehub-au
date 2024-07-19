@@ -65,7 +65,7 @@ const LeaderBoardForm = () => {
   const isLoading = useSelector((state) => state.loader.isLoading);
 
   const { data } = useSelector((state) => state.data);
-  console.log(data);
+  // console.log(data);
 
   const handleDateChange = (e) => {
     const year = e.year;
@@ -92,9 +92,9 @@ const LeaderBoardForm = () => {
         const encodedPartner = encodeURIComponent(selectedPartner);
         const encodedCode = encodeURIComponent(getCode(selectedPartner))
         const response = await axios.get(
-          `/api/fetchProductSales?territory_id=${encodedTerritory}&partner=${encodedPartner}&code=${encodedCode}`
+          `/api/fetchProductSales?territory_id=${encodedTerritory}&partner=${encodedPartner}`
         );
-        // console.log("Data is : ", response.data);
+        console.log("Data is : ", response.data);
         setAllData(response.data);
         setTemplate(response.data);
         filterDataByDate(response.data, date);
