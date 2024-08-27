@@ -13,7 +13,7 @@ app.use(express.json());
 // Create TCP Connection Pool
 const createTcpPool = async (config) => {
   const dbConfig = {
-    host: "34.66.234.203",
+    host: "34.29.110.213",
     port: "3306",
     user: "insert_ac",
     password: "google@123",

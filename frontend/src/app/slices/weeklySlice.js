@@ -32,7 +32,7 @@ export const fetchWeekly = createAsyncThunk('data/fetchWeekly', async ({ country
   dispatch(showLoader());
   try {
     const response = await axios.get(
-      `https://cms-data.testexperience.site/completedatafetcher/test-store-hub-page-weekly/${country}/${partner}`
+      `https://cms.testexperience.site/completedatafetcher/test-store-hub-page-weekly/${country}/${partner}`
     );
     const data = response.data;
     const [extractedObj] = Object.values(data);

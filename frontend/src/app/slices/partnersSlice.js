@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export const fetchPartners = createAsyncThunk('partners/fetchPartners', async (country) => {
   const response = await axios.get(
-    `https://cms-data.testexperience.site/completedatafetcher/test-store-hub-page-logos/${country}`
+    `https://cms.testexperience.site/completedatafetcher/test-store-hub-page-logos/${country}`
   );
   const data = response.data;
   const firstKey = Object.keys(data)[0];

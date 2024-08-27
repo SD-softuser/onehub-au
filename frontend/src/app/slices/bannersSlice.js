@@ -27,7 +27,7 @@ export const fetchBanners = createAsyncThunk(
     // return response.data.images; // Assuming the API returns only images array
   
     const response = await axios.get(
-      `https://cms-data.testexperience.site/completedatafetcher/test-store-hub-page-banners/${country}/${partner}`
+      `https://cms.testexperience.site/completedatafetcher/test-store-hub-page-banners/${country}/${partner}`
     );
     const data = response.data;
     const value = Object.values(data)[0];

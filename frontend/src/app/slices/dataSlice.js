@@ -32,7 +32,7 @@ export const fetchData = createAsyncThunk('data/fetchData', async (country, { di
   dispatch(showLoader());
   try {
     const response = await axios.get(
-      `https://cms-data.testexperience.site/completedatafetcher/test-store-hub-page/${country}`
+      `https://cms.testexperience.site/completedatafetcher/test-store-hub-page/${country}`
     );
     const data = response.data;
     const value = Object.values(data)[0];
