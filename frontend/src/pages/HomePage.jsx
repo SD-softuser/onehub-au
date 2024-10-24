@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MaxWidthWrapper from "../components/MaxWidthWrapper";
-import { FaChevronDown, FaChevronUp, FaImage } from "react-icons/fa";
+import { FaChevronDown, FaChevronRight, FaChevronUp, FaImage } from "react-icons/fa";
 import { HiOutlineArrowTopRightOnSquare } from "react-icons/hi2";
 import { Link } from "react-router-dom";
 import useQuery from "../utils/useQuery";
@@ -13,6 +13,9 @@ import { fetchBanners } from "../app/slices/bannersSlice";
 import SkeletonLoader from "../components/SkeletonLoader";
 import { fetchData } from "../app/slices/dataSlice";
 import SuspenseImage from "../components/SuspenseImage";
+import { twMerge } from "tailwind-merge";
+import { partnersData } from "../../public/assets/partnersData";
+import PerfectStore from "../components/PerfectStore";
 
 const HomePage = () => {
   const query = useQuery();
@@ -69,6 +72,7 @@ const HomePage = () => {
   const handlePartnerSelect = (partner) => {
     dispatch(setSelectedPartner(partner));
   };
+  const[currentPartner,setCurrentPartner]=useState(partnersData[0])
 
 
   if (countryStatus === 'loading' || partnersStatus === 'loading' || partnerDetailsStatus === 'loading') {
@@ -81,159 +85,214 @@ const HomePage = () => {
 
   return (
     <MaxWidthWrapper className="flex flex-col gap-6 py-10">
-      <main className="w-full bg-white rounded-lg px-6 py-10 shadow-md">
-
-        {/* Fetching from GCP */}
-        {/* <div className="flex justify-center items-center gap-4 px-4 py-3 rounded-full shadow-md">
-          {partners && partnerDetails && partners.map((partner, index) => (
-            <div
-              className="cursor-pointer"
-              onClick={() => handlePartnerSelect(partner)}
-              key={index}
-            >
-              {partnerDetails[partner] && (
-                <img src={selectedPartner === partner ? partnerDetails[partner].checked : partnerDetails[partner].unchecked} alt={partner} />
-              )}
-            </div>
-          ))}
-        </div> */}
-
-        <div className="flex justify-center items-center gap-4 px-4 py-3 rounded-full shadow-md">
-          {partnerDetails && Array.from(Object.values(partnerDetails)).map((partner, index) => {
-            // console.log(partner);
-            return (
-              <div
-                className="cursor-pointer"
-                onClick={() => handlePartnerSelect(partner.name)}
-                key={index}
-              >
-                <img src={selectedPartner === partner.name ? partner.checked : partner.unchecked} alt={partner.name} className={`${selectedPartner === partner.name && "border-googleBlue-500 border-2 rounded-full"}`} />
-              </div>
-            )
-          })}
-        </div>
-
-        {/* GCP Fetch */}
-        {/* {bannersStatus === 'loading' ? (
-          <div className="animate-pulse relative grid grid-cols-2 mt-4 gap-4 h-full w-full overflow-hidden">
-            <div className="w-full h-52 bg-gradient-to-b from-gray-200 to-transparent rounded-md"></div>
-            <div className="w-full h-52 bg-gradient-to-b from-gray-200 to-transparent rounded-md"></div>
-            <button
-              className="mx-auto bg-googleBlue-100 text-googleBlue-500 px-6 py-1.5 rounded-full font-medium flex justify-center items-center text-sm gap-2 my-2 col-span-2"
-            >
-              <div className="w-24 h-8 bg-gray-200 rounded-full"></div>
-            </button>
+      <main className="w-full flex flex-col gap-8 bg-white rounded-3xl px-6 pt-6 pb-10 shadow-md">
+        <div className="flex justify-between items-center">
+          <div className="flex gap-4 items-center justify-center">
+            <img
+              src="../public/assets/StorePromotionIcon.png"
+              alt=""
+              className="ml-2 h-12 w-12"
+            />
+            <p className="text-lg text-center sm:text-3xl  font-medium">
+              Store Promotions
+            </p>
           </div>
-        ) : (
+          {/* {banners && (
           <>
-            <div className={`relative grid grid-cols-2 mt-4 gap-4 ${opened || (banners && banners.length <= 2) ? "h-full" : "h-60 overflow-hidden"}`}>
-              {banners && banners.map((banner, index) => (
-                <img src={banner} key={index} alt={`Banner ${index}`} />
-              ))}
-              {!opened && (
-                <div className="absolute h-full w-full bg-gradient-to-t from-white to-transparent to-40%"></div>
-              )}
-            </div>
-
-            <button
-              className="mx-auto bg bg-googleBlue-100 text-googleBlue-500 px-6 py-1.5 rounded-full font-medium flex justify-center items-center text-sm gap-2 my-2"
-              onClick={() => setOpened(!opened)}
-            >
-              <h2>{opened ? "Collapse" : "View All"}</h2>
-              {opened ? <FaChevronUp /> : <FaChevronDown />}
-            </button>
+            <SwipeCarousel imgs={Object.values(banners)} />
           </>
         )} */}
 
-        {banners && (() => {
-          const bannersArray = Array.from(Object.values(banners));
-          const bannersLength = bannersArray.length;
+          <div
+            className={`grid grid-cols-3 justify-center gap-2 items-center px-2 py-1 sm:shadow-md sm:rounded-full`}
+          >
+            {partnersData &&
+              partnersData.map((partner, index) => {
+                console.log(currentPartner, partner);
+                return (
+                  <div
+                    className={twMerge(
+                      "h-auto w-full flex justify-center items-center cursor-pointer h-10 w-10 lg:h-20 lg:w-20"
+                    )}
+                    onClick={() => setCurrentPartner(partner)}
+                    key={index}
+                  >
+                    <img
+                      src={
+                        currentPartner.name === partner.name
+                          ? partner.checked
+                          : partner.unchecked
+                      }
+                      className="object-contain"
+                      alt={partner.name}
+                    />
 
-          if (bannerStatus === "loading") {
-            return (
-              // <div className="animate-pulse relative grid grid-cols-2 mt-4 gap-4 h-60 overflow-hidden">
-              //   <div className='w-full aspect-[50/15] bg-gray-100 flex justify-center items-center rounded-lg'>
-              //     <FaImage className='text-zinc-400 animate-pulse' size={32} />
-              //   </div>
-              //   <div className='w-full aspect-[50/15] bg-gray-100 flex justify-center items-center rounded-lg'>
-              //     <FaImage className='text-zinc-400 animate-pulse' size={32} />
-              //   </div>
-              //   <div className="absolute h-full w-full bg-gradient-to-t from-white to-transparent to-40%"></div>
-              // </div>
-              <div className="h-60 overflow-hidden flex justify-center items-center">
-                <div className='bg-white w-16 h-16 border-t-4 border-blue-500 rounded-full animate-spin'></div>
-              </div>
-            );
-          }
-
-          return banners && (
-            <>
-              <div className={`relative grid grid-cols-2 mt-4 gap-4 ${opened || (bannersLength && bannersLength <= 2) ? "h-full" : "h-60 overflow-hidden"}`}>
-                {bannersArray.map((banner, index) => (
-                  <div className="w-full">
-                    <SuspenseImage src={banner.imageUrl} key={index} alt={`Banner ${index}`} />
+                    {/* <SuspenseImage
+                    src={
+                      selectedPartner === partner.name
+                        ? partner.checked
+                        : partner.unchecked
+                    }
+                    alt={partner.name}
+                    suspenseClassName="w-full h-full bg-black/5 py-4 rounded-full"
+                  /> */}
                   </div>
-                ))}
-                {(!opened && bannersLength > 2) && (
-                  <div className="absolute h-full w-full bg-gradient-to-t from-white to-transparent to-40%"></div>
-                )}
-              </div>
-
-              {bannersLength > 2 && <button
-                className="mx-auto bg bg-googleBlue-100 text-googleBlue-500 px-6 py-1.5 rounded-full font-medium flex justify-center items-center text-sm gap-2 my-2"
-                onClick={() => setOpened(!opened)}
-              >
-                <h2>{opened ? "Collapse" : "View All"}</h2>
-                {opened ? <FaChevronUp /> : <FaChevronDown />}
-              </button>}
-            </>
-          );
-        })()}
-
-
-        {partnerDetails && selectedPartner && (
-          <div className="w-full bg-[#F5F5F5] flex justify-between px-3 py-2 rounded-xl mt-4">
-            <div className="flex gap-2">
-              <img
-                src={partnerDetails[selectedPartner]?.square}
-                alt={selectedPartner}
-                className="h-12 w-12"
-              />
-              <div className="flex flex-col justify-center">
-                <h1 className="font-medium">{selectedPartner}</h1>
-                <h6 className="text-xs text-gray-500 -mt-1">Field Sales</h6>
-              </div>
-            </div>
-            <Link
-              to={{
-                pathname: "/field-guide",
-                search: location.search
-              }}
-              state={{
-                name: selectedPartner,
-                icon: partnerDetails[selectedPartner]?.square
-              }}
-              className="bg-[#EBEBEB] text-[#333333] rounded-full px-4 flex justify-center items-center gap-2"
-            >
-              <HiOutlineArrowTopRightOnSquare />
-              Check Field Guide
-            </Link>
+                );
+              })}
           </div>
-        )}
+        </div>
 
-        <Link
+        {currentPartner.banners &&
+          (() => {
+            const bannersArray = currentPartner.banners;
+            const bannersLength = bannersArray.length;
+            console.log("banners array: ", bannersArray);
+
+            return banners && bannersLength !== 0 ? (
+              <>
+                <div
+                  className={`relative grid grid-cols-2 mt-4 gap-4 ${
+                    opened || (bannersLength && bannersLength <= 2)
+                      ? "h-full"
+                      : "h-60 overflow-hidden"
+                  }`}
+                >
+                  {bannersArray.map((banner, index) => (
+                    <img src={banner} key={index} alt={`Banner ${index}`} />
+                  ))}
+
+                  {!opened && bannersLength > 2 && (
+                    <div className="absolute h-full w-full bg-gradient-to-t from-white to-transparent to-40%"></div>
+                  )}
+                </div>
+
+                {bannersLength > 2 && (
+                  <button
+                    className="mx-auto bg bg-googleBlue-100 text-googleBlue-500 px-6 py-1.5 rounded-full font-medium flex justify-center items-center text-sm gap-2 my-2"
+                    onClick={() => setOpened(!opened)}
+                  >
+                    <h2>{opened ? "Collapse" : "View All"}</h2>
+                    {opened ? <FaChevronUp /> : <FaChevronDown />}
+                  </button>
+                )}
+              </>
+            ) : (
+              <h1 className="text-center text-xl sm:text-3xl lg:text-4xl font-medium">
+                No Promotions Available!
+              </h1>
+            );
+          })()}
+
+        {/* <Link
           to={{
             pathname: "/leaderboard",
-            search: location.search
+            search: location.search,
           }}
           className="bg-googleBlue-500 py-2 text-white rounded-full mt-4 px-4 flex justify-center items-center gap-2"
         >
           <HiOutlineArrowTopRightOnSquare />
           Leaderboard
-        </Link>
+        </Link> */}
       </main>
-
-      <LeaderBoardForm />
+      <div className="w-full flex items-center flex-row gap-6">
+        <Link
+          to={{
+            pathname: "/field-guide",
+            search: location.search,
+          }}
+          state={{
+            name: selectedPartner,
+            icon: partnerDetails[selectedPartner]?.square,
+          }}
+          className="relative w-full h-32 sm:h-auto cursor-pointer bg-[#FBFBFB] rounded-2xl overflow-hidden shadow-md"
+        >
+          <img
+            src="../public/assets/Discover Field Guide.png"
+            alt=""
+            className="rounded-2xl object-contain h-full w-full"
+          />
+        </Link>
+        <Link
+          to={{
+            pathname: "/quick-fix-guide",
+            search: location.search,
+          }}
+          state={{
+            name: selectedPartner,
+            icon: partnerDetails[selectedPartner]?.square,
+          }}
+          className="relative w-full h-32 sm:h-auto cursor-pointer bg-[#FBFBFB] rounded-2xl overflow-hidden shadow-md"
+        >
+          <img
+            src="../public/assets/Quick Fix Guide.png"
+            alt=""
+            className="rounded-2xl object-contain h-full w-full"
+          />
+        </Link>
+      </div>
+      <main className="w-full flex flex-col gap-8 bg-white rounded-3xl px-6 pt-6 pb-10 shadow-md">
+        <div className="flex justify-between items-center">
+          <div className="flex gap-4 items-center justify-center">
+            <img
+              src="../public/assets/DemoInstallationGuide.png"
+              alt=""
+              className="ml-2 h-12 w-12"
+            />
+            <p className="text-lg text-center sm:text-3xl font-medium">
+              Demo Installation Guide
+            </p>
+          </div>
+          <select className="mt-1 block w-48 pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+            <option>Phone</option>
+            <option>Tablet</option>
+          </select>
+        </div>
+        <div className="flex gap-6 overflow-x-auto no-scrollbar whitespace-nowrap">
+          <div className="flex-none w-[300px]">
+            <img src="../public/assets/Pixel9.png" alt="" className="mb-2" />
+            <div className="flex items-center justify-between text-googleBlue-500 bg-[#F0F5FF] h-12 rounded-lg">
+              <a
+                href="https://drive.google.com/file/d/18ccwUacFyHdnVGWg-ebn91yCLfuzRrv6/view"
+                className="font-medium pl-4"
+              >
+                Pixel 9 Installation Guide
+              </a>
+              <FaChevronRight className="h-3 w-3 mr-4" />
+            </div>
+          </div>
+          <div className="flex-none w-[300px]">
+            <img src="../public/assets/Pixel9Pro.png" alt="" className="mb-2" />
+            <div className="flex items-center justify-between text-googleBlue-500 bg-[#F0F5FF] h-12 rounded-lg">
+              <a href="" className="font-medium pl-4">
+                Pixel 9 Pro Installation Guide
+              </a>
+              <FaChevronRight className="h-3 w-3 mr-4" />
+            </div>
+          </div>
+          <div className="flex-none w-[300px]">
+            <img src="../public/assets/Pixel9ProXL.png" alt="" className="mb-2" />
+            <div className="flex items-center justify-between text-googleBlue-500 bg-[#F0F5FF] h-12 rounded-lg">
+              <a
+                href="https://drive.google.com/file/d/18floB3wfu_L-x4m_xdzy-KLgop_pJnqu/view"
+                className="font-medium pl-4"
+              >
+                Pixel 9 Pro XL Installation Guide
+              </a>
+              <FaChevronRight className="h-3 w-3 mr-4" />
+            </div>
+          </div>
+          <div className="flex-none w-[300px]">
+            <img src="../public/assets/Pixel9Pro.png" alt="" className="mb-2" />
+            <div className="flex items-center justify-between text-googleBlue-500 bg-[#F0F5FF] h-12 rounded-lg">
+              <a href="" className="font-medium pl-4">
+                Pixel 9 Pro Installation Guide
+              </a>
+              <FaChevronRight className="h-3 w-3 mr-4" />
+            </div>
+          </div>
+        </div>
+      </main>
+      <PerfectStore />
     </MaxWidthWrapper>
   );
 };

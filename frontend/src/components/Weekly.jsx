@@ -1,13 +1,12 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-import { fetchCountry } from '../app/slices/countrySlice';
-import useQuery from '../utils/useQuery';
-import { fetchWeekly } from '../app/slices/weeklySlice';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { fetchCountry } from "../app/slices/countrySlice";
+import useQuery from "../utils/useQuery";
+import { fetchWeekly } from "../app/slices/weeklySlice";
 
 const Weekly = () => {
-
   const query = useQuery();
   const dispatch = useDispatch();
   const territory_id = query.get("territory_id");
@@ -15,8 +14,12 @@ const Weekly = () => {
   const location = useLocation();
   const { name } = location.state;
 
-  const { country } = useSelector((state) => state.country)
-  const { data: weekly, status: weeklyStatus, error: weeklyError } = useSelector((state) => state.weekly)
+  const { country } = useSelector((state) => state.country);
+  const {
+    data: weekly,
+    status: weeklyStatus,
+    error: weeklyError,
+  } = useSelector((state) => state.weekly);
 
   useEffect(() => {
     if (territory_id) {
@@ -31,11 +34,10 @@ const Weekly = () => {
     }
   }, [territory_id, name, country, dispatch]);
 
-
   // useEffect(() => {
   //   const fetchImages = async () => {
   //     try {
-  //       const response = await axios.get(`https://storehub-image.testexperience.site/next_level/storehub-company/${country}/${name}/Weekly`);
+  //       const response = await axios.get(https://storehub-image.testexperience.site/next_level/storehub-company/${country}/${name}/Weekly);
   //       const data = response.data.images;
   //       console.log("Data is : ", data);
   //       setImageUrls(data);
@@ -49,21 +51,25 @@ const Weekly = () => {
   // }, [name, country])
 
   return (
-    <main className='bg-white w-full rounded-2xl shadow-lg'>
-      <h1 className='font-semibold text-center text-4xl my-4'>
-        Weekly Priorities
-      </h1>
-      <div className='w-full flex justify-center items-center mb-4'>
+    <main className="bg-white w-full rounded-2xl shadow-lg">
+      {/* <h1 className='font-semibold text-center text-4xl my-4'>
+          Weekly Priorities
+        </h1> */}
+      {/* <div className='w-full flex justify-center items-center mb-4'>
         <div className='bg-googleBlue-50 font-medium px-2 py-1 rounded-lg'>
           <h6 className='text-[#164EA7] text-center'>
             Week of July 15th
           </h6>
         </div>
+      </div> */}
+
+      <div className="bg-[#F6F7FA] w-full h-[2px]" />
+
+      <div>
+        <img src="Weekly.png" alt="" className="w-full h-full" />
       </div>
 
-      <div className='bg-[#F6F7FA] w-full h-[2px]' />
-
-      {weeklyStatus === 'loading' ? (
+      {/* {weeklyStatus === 'loading' ? (
         <div className="flex flex-col gap-4 pl-4 pr-6 pb-8 mt-4">
           {[...Array(3)].map((_, index) => (
             <div key={index} className="flex gap-4 animate-pulse">
@@ -93,7 +99,7 @@ const Weekly = () => {
                   <img src="/assets/Index Vector.png" alt="vector" className='object-contain' />
                 </div>
 
-                <div className={`flex-1 flex flex-col gap-4 ${card.link && "cursor-pointer"}`}>
+                <div className={flex-1 flex flex-col gap-4 ${card.link && "cursor-pointer"}}>
                   <div onClick={() => handleCardClick(card.link)}>
                     {card.imageUrl && <img src={card.imageUrl} alt={card.name} className='object-contain' />}
                   </div>
@@ -108,10 +114,9 @@ const Weekly = () => {
             )
           })}
         </div>
-      ) : null}
-
+      ) : null} */}
     </main>
-  )
-}
+  );
+};
 
-export default Weekly
+export default Weekly;

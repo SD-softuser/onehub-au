@@ -5,7 +5,7 @@ export const fetchPartnerDetails = createAsyncThunk(
   'partnerDetails/fetchPartnerDetails',
   async ({ country, partner }) => {
     const response = await axios.get(
-      `https://cms.testexperience.site/completedatafetcher/test-store-hub-page-logos/${country}/${partner}`
+      `https://cms-backend-au-dot-onehub-namer-app.uc.r.appspot.com/completedatafetcher/test-store-hub-page-logos/${country}/${partner}`
     );
 
     const data = response.data;
