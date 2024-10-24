@@ -207,7 +207,7 @@ const HomePage = () => {
           className="relative w-full h-32 sm:h-auto cursor-pointer bg-[#FBFBFB] rounded-2xl overflow-hidden shadow-md"
         >
           <img
-            src="../public/assets/Discover Field Guide.png"
+            src="../assets/Discover Field Guide.png"
             alt=""
             className="rounded-2xl object-contain h-full w-full"
           />
@@ -224,7 +224,7 @@ const HomePage = () => {
           className="relative w-full h-32 sm:h-auto cursor-pointer bg-[#FBFBFB] rounded-2xl overflow-hidden shadow-md"
         >
           <img
-            src="../public/assets/Quick Fix Guide.png"
+            src="../assets/Quick Fix Guide.png"
             alt=""
             className="rounded-2xl object-contain h-full w-full"
           />
@@ -234,7 +234,7 @@ const HomePage = () => {
         <div className="flex justify-between items-center">
           <div className="flex gap-4 items-center justify-center">
             <img
-              src="../public/assets/DemoInstallationGuide.png"
+              src="../assets/DemoInstallationGuide.png"
               alt=""
               className="ml-2 h-12 w-12"
             />
@@ -249,7 +249,7 @@ const HomePage = () => {
         </div>
         <div className="flex gap-6 overflow-x-auto no-scrollbar whitespace-nowrap">
           <div className="flex-none w-[300px]">
-            <img src="../public/assets/Pixel9.png" alt="" className="mb-2" />
+            <img src="../assets/Pixel9.png" alt="" className="mb-2" />
             <div className="flex items-center justify-between text-googleBlue-500 bg-[#F0F5FF] h-12 rounded-lg">
               <a
                 href="https://drive.google.com/file/d/18ccwUacFyHdnVGWg-ebn91yCLfuzRrv6/view"
@@ -261,7 +261,7 @@ const HomePage = () => {
             </div>
           </div>
           <div className="flex-none w-[300px]">
-            <img src="../public/assets/Pixel9Pro.png" alt="" className="mb-2" />
+            <img src="../assets/Pixel9Pro.png" alt="" className="mb-2" />
             <div className="flex items-center justify-between text-googleBlue-500 bg-[#F0F5FF] h-12 rounded-lg">
               <a href="" className="font-medium pl-4">
                 Pixel 9 Pro Installation Guide
@@ -270,7 +270,7 @@ const HomePage = () => {
             </div>
           </div>
           <div className="flex-none w-[300px]">
-            <img src="../public/assets/Pixel9ProXL.png" alt="" className="mb-2" />
+            <img src="../assets/Pixel9ProXL.png" alt="" className="mb-2" />
             <div className="flex items-center justify-between text-googleBlue-500 bg-[#F0F5FF] h-12 rounded-lg">
               <a
                 href="https://drive.google.com/file/d/18floB3wfu_L-x4m_xdzy-KLgop_pJnqu/view"
@@ -282,7 +282,7 @@ const HomePage = () => {
             </div>
           </div>
           <div className="flex-none w-[300px]">
-            <img src="../public/assets/Pixel9Pro.png" alt="" className="mb-2" />
+            <img src="../assets/Pixel9Pro.png" alt="" className="mb-2" />
             <div className="flex items-center justify-between text-googleBlue-500 bg-[#F0F5FF] h-12 rounded-lg">
               <a href="" className="font-medium pl-4">
                 Pixel 9 Pro Installation Guide
