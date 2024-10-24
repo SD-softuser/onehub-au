@@ -4,20 +4,20 @@ import { OptusImg } from "./optus/Optus"
 export const partnersData = [
     {
         name : "Telstra",
-        checked: "../public/assets/telstra/TelstraChecked.png",
-        unchecked: "../public/assets/telstra/TelstraUnchecked.png",
+        checked: "../assets/telstra/TelstraChecked.png",
+        unchecked: "../assets/telstra/TelstraUnchecked.png",
         banners: TelstraImg 
     },
     {
         name: "JB HiFi",
-        checked: "../public/assets/jbhifi/JBHifiChecked.png",
-        unchecked: "../public/assets/jbhifi/JBHifiUnchecked.png",
+        checked: "../assets/jbhifi/JBHifiChecked.png",
+        unchecked: "../assets/jbhifi/JBHifiUnchecked.png",
         banners: JBhifiImg
     },
     {
         name: "Optus",
-        checked: "../public/assets/optus/OptusChecked.png",
-        unchecked: "../public/assets/optus/OptusUnchecked.png",
+        checked: "../assets/optus/OptusChecked.png",
+        unchecked: "../assets/optus/OptusUnchecked.png",
         banners: OptusImg 
     },
 ]

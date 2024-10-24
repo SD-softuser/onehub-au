@@ -89,7 +89,7 @@ const HomePage = () => {
         <div className="flex justify-between items-center">
           <div className="flex gap-4 items-center justify-center">
             <img
-              src="../public/assets/StorePromotionIcon.png"
+              src="../assets/StorePromotionIcon.png"
               alt=""
               className="ml-2 h-12 w-12"
             />
